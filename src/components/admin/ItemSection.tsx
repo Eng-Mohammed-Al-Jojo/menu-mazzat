@@ -81,8 +81,8 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
 
         <button
           onClick={addItem}
-          className="flex-4 py-2 rounded-xl font-bold bg-[#D2000E] grow text-black
-          hover:text-white hover:bg-[#e2444f] hover:shadow-[#df3e48] hover:cursor-pointer"
+          className="flex-4 py-2 rounded-xl font-bold bg-[#D2000E] grow text-[#FCD451]
+          hover:text-[#fcda6b] hover:bg-[#e2444f] hover:shadow-[#df3e48] hover:cursor-pointer"
         >
           إضافة الصنف
         </button>

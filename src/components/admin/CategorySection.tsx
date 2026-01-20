@@ -29,9 +29,9 @@ const CategorySection: React.FC<Props> = ({
 
         <button
           onClick={() => setPopup({ type: "addCategory" })}
-          className="px-4 rounded-xl bg-[#D2000E] flex items-center text-black hover:bg-[#d02c37] hover:text-white hover:cursor-pointer"
+          className="px-4 rounded-xl bg-[#D2000E] flex items-center text-[#FCD451] hover:bg-[#D2000E]/80 hover:text-[#FCD451] hover:cursor-pointer"
         >
-          <FiPlus className="text-lg" />
+          <FiPlus className="text-xl" />
         </button>
       </div>
       <div className="flex gap-2 flex-wrap">

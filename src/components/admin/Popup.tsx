@@ -82,7 +82,7 @@ const Popup: React.FC<Props> = ({
                     logout && logout();
                     setPopup({ type: null });
                   }}
-                  className="px-5 py-2 rounded-xl font-bold bg-black text-red-500 hover:cursor-pointer"
+                  className="px-5 py-2 rounded-xl font-bold bg-[#FCD451] text-[#D2000E] hover:bg-[#FCD451]/80 hover:cursor-pointer"
                 >
                   نعم
                 </button>

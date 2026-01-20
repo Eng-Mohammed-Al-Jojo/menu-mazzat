@@ -327,7 +327,7 @@ export default function Admin() {
         )}
         {!resetPasswordPopup && (
           <div
-            className="bg-white p-6 rounded-3xl w-full max-w-xs border"
+            className="bg-white p-6 rounded-3xl w-full max-w-xs border-4"
             style={{ borderColor: "#D2000E" }}
           >
             <h1 className="text-xl font-bold mb-4 text-center text-[#D2000E]">دخول الأدمن</h1>
@@ -347,7 +347,7 @@ export default function Admin() {
             />
             <button
               onClick={login}
-              className="w-full py-3 rounded-xl font-bold bg-[#0F0F0F] text-[#D2000E] hover:cursor-pointer"
+              className="w-full py-3 rounded-xl font-bold bg-[#FCD451] text-[#D2000E] hover:cursor-pointer hover:bg-[#FCD451]/80"
             >
               دخول
             </button>
