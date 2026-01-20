@@ -1,0 +1,51 @@
+{
+  "categories": {
+    "-OjPrOPEEqqVHidODmSE": {
+      "createdAt": 1768903513770,
+      "name": "الشاورما"
+    },
+    "-OjPwn38DWQc9DMNZ6l-": {
+      "createdAt": 1768904930151,
+      "name": "سندوتشات غربية"
+    }
+  },
+  "items": {
+    "-OjPraWaa06N1r8wnGzf": {
+      "categoryId": "-OjPrOPEEqqVHidODmSE",
+      "createdAt": 1768903567486,
+      "ingredients": "عراقي شاورما طحينة شطة",
+      "name": "فرشوحة عادي",
+      "price": "20,25",
+      "priceTw": "",
+      "visible": true
+    },
+    "-OjPwrxqXlhEC61DSG-F": {
+      "categoryId": "-OjPwn38DWQc9DMNZ6l-",
+      "createdAt": 1768904950229,
+      "ingredients": "",
+      "name": "كاليزوني",
+      "price": "25",
+      "visible": true
+    },
+    "-OjPz_6iY93bZnL6fj1p": {
+      "categoryId": "-OjPrOPEEqqVHidODmSE",
+      "createdAt": 1768905659468,
+      "ingredients": "",
+      "name": "صفيحة",
+      "price": "25",
+      "visible": true
+    },
+    "-OjPzbQCxDVZh_hAqwID": {
+      "categoryId": "-OjPrOPEEqqVHidODmSE",
+      "createdAt": 1768905668908,
+      "ingredients": "",
+      "name": "سوري",
+      "price": "25",
+      "visible": true
+    }
+  },
+  "meta": {
+    "version": "1.0",
+    "exportedAt": 1768910531943
+  }
+}
