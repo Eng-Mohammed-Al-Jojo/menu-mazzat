@@ -1,51 +1,495 @@
 {
   "categories": {
-    "-OjPrOPEEqqVHidODmSE": {
-      "createdAt": 1768903513770,
-      "name": "الشاورما"
+    "-OjQiwHiMfTgM3i9V4x9": {
+      "createdAt": 1768918074334,
+      "name": "العجائن الخاصة"
     },
-    "-OjPwn38DWQc9DMNZ6l-": {
-      "createdAt": 1768904930151,
-      "name": "سندوتشات غربية"
+    "-OjQizhDk6ECzHiRYirq": {
+      "createdAt": 1768918088318,
+      "name": "طعجات"
+    },
+    "-OjQj3CSXepBUhDPfBSQ": {
+      "createdAt": 1768918106765,
+      "name": "ساندوتشات دجاج"
+    },
+    "-OjQj6Vq5HOkQd3Y2Jgo": {
+      "createdAt": 1768918120294,
+      "name": "سندوتشات الصاج"
+    },
+    "-OjQj9P4BT7q78zZsHN8": {
+      "createdAt": 1768918132149,
+      "name": "البيتزا"
+    },
+    "-OjQjFUp2Cs2HVO9YNdZ": {
+      "createdAt": 1768918157093,
+      "name": "السلطات"
+    },
+    "-OjQjH3yddqq8Ul1bXGu": {
+      "createdAt": 1768918163566,
+      "name": "الحلويات"
+    },
+    "-OjQjLkDFnqZEzzEiLiH": {
+      "createdAt": 1768918182718,
+      "name": "المشروبات الباردة"
+    },
+    "-OjQjOaL85kP5XG-Jj9S": {
+      "createdAt": 1768918194374,
+      "name": "المشروبات الساخنة"
     }
   },
   "items": {
-    "-OjPraWaa06N1r8wnGzf": {
-      "categoryId": "-OjPrOPEEqqVHidODmSE",
-      "createdAt": 1768903567486,
-      "ingredients": "عراقي شاورما طحينة شطة",
-      "name": "فرشوحة عادي",
-      "price": "20,25",
+    "-OjQjUmLak3pHPXLMb4n": {
+      "categoryId": "-OjQiwHiMfTgM3i9V4x9",
+      "createdAt": 1768918219718,
+      "ingredients": "",
+      "name": "كالازوني",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQjYtTZghyh4ZSosm-": {
+      "categoryId": "-OjQiwHiMfTgM3i9V4x9",
+      "createdAt": 1768918236558,
+      "ingredients": "",
+      "name": "تشيكن إيطالي",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQjc-_IO6JQ8zIwxM2": {
+      "categoryId": "-OjQiwHiMfTgM3i9V4x9",
+      "createdAt": 1768918253397,
+      "ingredients": "",
+      "name": "سترامبولي",
+      "price": "40",
+      "visible": true
+    },
+    "-OjQjkKChxdmaEzu23uq": {
+      "categoryId": "-OjQizhDk6ECzHiRYirq",
+      "createdAt": 1768918287485,
+      "ingredients": "",
+      "name": "طعجة بيستو دجاج",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQjqVx4ukgb-eXsYRT": {
+      "categoryId": "-OjQizhDk6ECzHiRYirq",
+      "createdAt": 1768918312813,
+      "ingredients": "",
+      "name": "طعجة فونجي دجاج",
+      "price": "35",
       "priceTw": "",
       "visible": true
     },
-    "-OjPwrxqXlhEC61DSG-F": {
-      "categoryId": "-OjPwn38DWQc9DMNZ6l-",
-      "createdAt": 1768904950229,
+    "-OjQk834AeAE3FZh2pM1": {
+      "categoryId": "-OjQizhDk6ECzHiRYirq",
+      "createdAt": 1768918388789,
       "ingredients": "",
-      "name": "كاليزوني",
+      "name": "طعجة شنيتسل",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQkFFpxbJajJ6zbcJ_": {
+      "categoryId": "-OjQj3CSXepBUhDPfBSQ",
+      "createdAt": 1768918418277,
+      "ingredients": "",
+      "name": "تشيكن نابوليتان",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQkfh_SyrTqKKJ1wWH": {
+      "categoryId": "-OjQj3CSXepBUhDPfBSQ",
+      "createdAt": 1768918530709,
+      "ingredients": "",
+      "name": "تشيكن بارميزان",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQklRSwlggt-eOeMDm": {
+      "categoryId": "-OjQj3CSXepBUhDPfBSQ",
+      "createdAt": 1768918554189,
+      "ingredients": "",
+      "name": "تشيكن ألاكينج",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQktKKG5RJNgE9K3mK": {
+      "categoryId": "-OjQj3CSXepBUhDPfBSQ",
+      "createdAt": 1768918586501,
+      "ingredients": "",
+      "name": "تشيكن سويس",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQkx6hXBg0_UucJcyP": {
+      "categoryId": "-OjQj3CSXepBUhDPfBSQ",
+      "createdAt": 1768918602013,
+      "ingredients": "",
+      "name": "تشيكن كاري",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQl07K4lxhsfPg9mg9": {
+      "categoryId": "-OjQj3CSXepBUhDPfBSQ",
+      "createdAt": 1768918618437,
+      "ingredients": "",
+      "name": "تشيكن بيتزا",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQl2ySd23rDtb4puCR": {
+      "categoryId": "-OjQj3CSXepBUhDPfBSQ",
+      "createdAt": 1768918630093,
+      "ingredients": "",
+      "name": "تشيكن بانيه",
       "price": "25",
       "visible": true
     },
-    "-OjPz_6iY93bZnL6fj1p": {
-      "categoryId": "-OjPrOPEEqqVHidODmSE",
-      "createdAt": 1768905659468,
+    "-OjQlCzTPpLP7bhYI6-_": {
+      "categoryId": "-OjQj6Vq5HOkQd3Y2Jgo",
+      "createdAt": 1768918671118,
       "ingredients": "",
-      "name": "صفيحة",
+      "name": "فطيرة دجاج",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQlH5Ks18e0b_AJTSm": {
+      "categoryId": "-OjQj6Vq5HOkQd3Y2Jgo",
+      "createdAt": 1768918687941,
+      "ingredients": "",
+      "name": "صفيحة مسحب دجاج",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQlMzKcWD3K2d9zdPM": {
+      "categoryId": "-OjQj6Vq5HOkQd3Y2Jgo",
+      "createdAt": 1768918712069,
+      "ingredients": "",
+      "name": "فطيرة ذهبية",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQlVYhnaKTvwqQzGxR": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918747165,
+      "ingredients": "",
+      "name": "مرجريتا",
+      "price": "12,20",
+      "visible": true
+    },
+    "-OjQla-pDd5kf69qBkjY": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918769509,
+      "ingredients": "",
+      "name": "خضار",
+      "price": "15,25",
+      "visible": true
+    },
+    "-OjQlf9KJq3mogy8Cbre": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918790597,
+      "ingredients": "",
+      "name": "ببروني",
+      "price": "15,25",
+      "visible": true
+    },
+    "-OjQljQ_ttyiUmI5J3ah": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918808085,
+      "ingredients": "",
+      "name": "سويس",
+      "price": "15,25",
+      "visible": true
+    },
+    "-OjQlsk_9bznIv8j71Ai": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918846293,
+      "ingredients": "",
+      "name": "بيتزا بينكا دجاج (إيطالية)",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQlzDRJfoyes3RjVf0": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918872780,
+      "ingredients": "",
+      "name": "بيتزا بينكا فونجي(إيطالية)",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQm6jCUMNWC5kE52XW": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918907645,
+      "ingredients": "",
+      "name": "بيتزا فونجي دجاج (إيطالية)",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQmA7xRlzbnXp9bQ2G": {
+      "categoryId": "-OjQj9P4BT7q78zZsHN8",
+      "createdAt": 1768918921581,
+      "ingredients": "",
+      "name": "بيتزا فونجي بيستو (إيطالية)",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQmfpBAvoicTg__13g": {
+      "categoryId": "-OjQjFUp2Cs2HVO9YNdZ",
+      "createdAt": 1768919055484,
+      "ingredients": "",
+      "name": "ذرة مايونيز",
+      "price": "8",
+      "visible": true
+    },
+    "-OjQmjo37_clFZRetzhK": {
+      "categoryId": "-OjQjFUp2Cs2HVO9YNdZ",
+      "createdAt": 1768919071796,
+      "ingredients": "",
+      "name": "كولسلو",
+      "price": "8",
+      "visible": true
+    },
+    "-OjQmnVJtnpsTmz0kRxz": {
+      "categoryId": "-OjQjFUp2Cs2HVO9YNdZ",
+      "createdAt": 1768919086916,
+      "ingredients": "",
+      "name": "ملفوف أحمر بالمايونيز",
+      "price": "8",
+      "visible": true
+    },
+    "-OjQmsLSxC1H0CeDQjTQ": {
+      "categoryId": "-OjQjFUp2Cs2HVO9YNdZ",
+      "createdAt": 1768919106764,
+      "ingredients": "",
+      "name": "شيبس",
+      "price": "10",
+      "visible": true
+    },
+    "-OjQn2lg-cMUHzAMywk4": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919153564,
+      "ingredients": "",
+      "name": "ليمون بالنعناع",
+      "price": "10",
+      "visible": true
+    },
+    "-OjQn5Kgt7QVnPWpCLto": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919164060,
+      "ingredients": "",
+      "name": "أناناس",
+      "price": "12",
+      "visible": true
+    },
+    "-OjQn8_Kjr4PGMNR-R6k": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919177349,
+      "ingredients": "",
+      "name": "برتقال",
+      "price": "12",
+      "visible": true
+    },
+    "-OjQnDl4N08wJ4HbA2tN": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919198581,
+      "ingredients": "",
+      "name": "موز بالحليب",
+      "price": "15",
+      "visible": true
+    },
+    "-OjQnHF3b-kBiqipsXro": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919212852,
+      "ingredients": "",
+      "name": "أناناس بالحليب",
+      "price": "15",
+      "visible": true
+    },
+    "-OjQnNRpEA09TWiFYI4G": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919238245,
+      "ingredients": "",
+      "name": "مشروب غازي",
+      "price": "15",
+      "visible": true
+    },
+    "-OjQnREgkTRSRUm9xWLn": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919253788,
+      "ingredients": "",
+      "name": "مياه معدنية صغير",
+      "price": "5",
+      "visible": true
+    },
+    "-OjQnUXw_9Pnpce_IVgM": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919267308,
+      "ingredients": "",
+      "name": "مياه معدنية كبيرة",
+      "price": "10",
+      "visible": true
+    },
+    "-OjQnXU3BmOp0TAr0f3d": {
+      "categoryId": "-OjQjOaL85kP5XG-Jj9S",
+      "createdAt": 1768919279348,
+      "ingredients": "",
+      "name": "قهوة",
+      "price": "7",
+      "visible": true
+    },
+    "-OjQnZPZmrpTBqqaTkzI": {
+      "categoryId": "-OjQjOaL85kP5XG-Jj9S",
+      "createdAt": 1768919287252,
+      "ingredients": "",
+      "name": "شاي",
+      "price": "7",
+      "visible": true
+    },
+    "-OjQnb1RzrB2umLvK8Dl": {
+      "categoryId": "-OjQjOaL85kP5XG-Jj9S",
+      "createdAt": 1768919297996,
+      "ingredients": "",
+      "name": "نسكافيه",
+      "price": "10",
+      "visible": true
+    },
+    "-OjQo1GRsl3VCGu5rhC8": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919409548,
+      "ingredients": "",
+      "name": "ميلك شيك نوتيلا",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQo4kggATl7EDDo2qa": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919423836,
+      "ingredients": "",
+      "name": "ميلك شيك لوتس",
       "price": "25",
       "visible": true
     },
-    "-OjPzbQCxDVZh_hAqwID": {
-      "categoryId": "-OjPrOPEEqqVHidODmSE",
-      "createdAt": 1768905668908,
+    "-OjQoA_wFJmiVYC9Gt9Z": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919447724,
       "ingredients": "",
-      "name": "سوري",
+      "name": "ميلك شيك بستاشيو",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQoGz3RRniECb_E3wJ": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919473908,
+      "ingredients": "",
+      "name": "ميلك شيك أوريو",
       "price": "25",
+      "visible": true
+    },
+    "-OjQoLH4WBeB1_1QoL43": {
+      "categoryId": "-OjQjLkDFnqZEzzEiLiH",
+      "createdAt": 1768919491508,
+      "ingredients": "",
+      "name": "ميلك شيك كراميل",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQoW0R-Bc-jgM-6n3q": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919535500,
+      "ingredients": "",
+      "name": "كنافة نوتيلا",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQo_9gFaDPlFknqt4Z": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919552476,
+      "ingredients": "",
+      "name": "كريب نوتيلا",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQobuRPWyAemGMOMLD": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919563724,
+      "ingredients": "",
+      "name": "كريب لوتس",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQofiBwQvezwgVUegg": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919579324,
+      "ingredients": "",
+      "name": "كريب بستاشيو",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQok6h7hl5b95UmvmY": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919597341,
+      "ingredients": "",
+      "name": "كريب سبيشل",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQooQBJ160xZVX1eIW": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919614972,
+      "ingredients": "",
+      "name": "كريب دبي",
+      "price": "40",
+      "visible": true
+    },
+    "-OjQoshozx9f8ynT_9GT": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919632548,
+      "ingredients": "",
+      "name": "كريب مكس",
+      "price": "40",
+      "visible": true
+    },
+    "-OjQp0jpaKfMRcVWyopO": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919669541,
+      "ingredients": "",
+      "name": "فيتوتشيني نوتيلا",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQp5HZAyTmH0ffIBpw": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919688148,
+      "ingredients": "",
+      "name": "فيتوتشيني لوتس",
+      "price": "35",
+      "visible": true
+    },
+    "-OjQpBEBhHCqZ0ViBoBK": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919712508,
+      "ingredients": "",
+      "name": "فيتوتشيني بستاشيو",
+      "price": "30",
+      "visible": true
+    },
+    "-OjQpMEJwbuMK9fqwRGx": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919757572,
+      "ingredients": "",
+      "name": "فيتوتشيني VIP",
+      "price": "40",
+      "visible": true
+    },
+    "-OjQpQ0JMTcDlP3_kmab": {
+      "categoryId": "-OjQjH3yddqq8Ul1bXGu",
+      "createdAt": 1768919773060,
+      "ingredients": "",
+      "name": "صفيحة لوتس",
+      "price": "45",
       "visible": true
     }
   },
   "meta": {
     "version": "1.0",
-    "exportedAt": 1768910531943
+    "exportedAt": 1768921063580
   }
 }
