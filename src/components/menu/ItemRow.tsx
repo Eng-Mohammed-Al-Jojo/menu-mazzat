@@ -38,7 +38,7 @@ export default function ItemRow({ item }: Props) {
         <div className="flex-1 min-w-0 relative z-10">
           <h3
             className={`
-              text-xl md:text-2xl 
+              text-lg md:text-xl 
               font-extrabold
               ${unavailable
                 ? "line-through text-black/40 font-extralight"
