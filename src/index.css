@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 
-
+/* إجبار المتصفح على تجاهل Dark Mode */
+:root {
+  color-scheme: light;
+}
 
 @font-face {
   font-family: 'Playpen Sans Arabic';
