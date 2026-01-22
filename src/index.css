@@ -1,37 +1,6 @@
 @import "tailwindcss";
 
 
-/* منع أي تأثير Dark Mode */
-/* إجبار كامل على Light Mode */
-html,
-body,
-#root,
-#__next {
-  background-color: #FCD451 !important;
-  color: black !important;
-}
-
-/* إصلاح أي input أو textarea */
-input,
-textarea,
-select,
-button {
-  background-color: #FCD451 !important;
-  color: black !important;
-  -webkit-text-fill-color: black !important;
-  /* Safari */
-}
-
-/* منع أي تأثير dark على scrollbars */
-* {
-  scrollbar-color: #D2000E #FCD451 !important;
-}
-
-/* منع أي تأثير dark على كل شيء */
-:root {
-  color-scheme: light !important;
-}
-
 
 @font-face {
   font-family: 'Playpen Sans Arabic';
