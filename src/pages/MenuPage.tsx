@@ -10,6 +10,8 @@ export default function MenuPage() {
         flex flex-col
         bg-[#FCD451]
         text-black
+        dark:bg-[#FCD451]
+        dark:text-black
         font-[Cairo]
       
       "
