@@ -34,15 +34,12 @@ export default function ItemRow({ item }: Props) {
         )}
 
         {/* Name + Ingredients */}
-        <div className="flex-1 min-w-0 relative z-10">
+        <div className="flex-1 min-w-0 relative z-10 text-black">
           <h3
             className={`
               text-lg md:text-xl font-extrabold
               bg-linear-to-r from-yellow-900 to-yellow-700 bg-clip-text text-transparent
-              ${unavailable
-                ? "line-through decoration-black/40 decoration-2"
-                : ""
-              }
+              ${unavailable ? "line-through decoration-black/40 decoration-2" : ""}
             `}
           >
             {item.name}
@@ -52,10 +49,7 @@ export default function ItemRow({ item }: Props) {
             <p
               className={`
                 mt-1 text-xs md:text-md text-black/60
-                ${unavailable
-                  ? "line-through decoration-black/30 decoration-1"
-                  : ""
-                }
+                ${unavailable ? "line-through decoration-black/30 decoration-1" : ""}
               `}
             >
               {item.ingredients}
@@ -67,10 +61,7 @@ export default function ItemRow({ item }: Props) {
         <div
           className={`
             flex items-center relative z-10 text-md md:text-lg text-black/80
-            ${unavailable
-              ? "line-through decoration-black/50 decoration-2"
-              : ""
-            }
+            ${unavailable ? "line-through decoration-black/50 decoration-2" : ""}
           `}
         >
           {prices.map((p, i) => (

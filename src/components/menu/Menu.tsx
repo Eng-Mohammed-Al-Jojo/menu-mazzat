@@ -173,44 +173,38 @@ export default function Menu() {
             alt="Logo"
             className="w-full h-full object-contain rounded-full shadow-2xl animate-pulseScale"
           />
-          {/* Glow دائري حول الشعار */}
           <div className="absolute inset-0 rounded-full border-4 border-yellow-300 opacity-50 animate-ping"></div>
         </div>
 
-        {/* نص التحميل مع gradient و typing effect */}
         <h2 className="text-3xl md:text-5xl font-extrabold bg-linear-to-r from-yellow-900 to-yellow-700 bg-clip-text text-transparent animate-textGradient">
           يتم تحضير القائمة
           <span className="text-[#D2000E] animate-ping ml-1">...</span>
         </h2>
 
-        {/* تأثير كتابة إضافي */}
         <p className="mt-4 text-black/70 text-lg md:text-xl font-[Alamiri] tracking-wide animate-fadeIn">
           انتظر قليلاً، سيتم عرض كل الأصناف قريباً
         </p>
-
-
       </div>
     );
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 pb-20 space-y-8 font-[Alamiri]">
+    <main className="max-w-4xl mx-auto px-4 pb-20 space-y-8 font-[Alamiri] text-black">
       {toast && (
         <div
           className="fixed top-6 right-6 px-6 py-3 rounded-2xl font-bold shadow-2xl z-50 text-white"
           style={{
             background:
               toast.color === "green"
-                ? "linear-gradient(to right, #FDE68A, #F59E0B)" // أخضر/ذهبي
+                ? "linear-gradient(to right, #FDE68A, #F59E0B)"
                 : toast.color === "red"
-                  ? "linear-gradient(to right, #D2000E, #9B111E)" // أحمر/قرمزي
-                  : "linear-gradient(to right, #FCD451, #D2000E)", // افتراضي
+                  ? "linear-gradient(to right, #D2000E, #9B111E)"
+                  : "linear-gradient(to right, #FCD451, #D2000E)",
           }}
         >
           {toast.message}
         </div>
       )}
-
 
       {/* Filter */}
       <div className="flex flex-wrap gap-3 justify-center">

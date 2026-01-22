@@ -5,9 +5,10 @@ interface Props {
   category: Category;
   items: Item[];
 }
+
 export default function CategorySection({ category, items }: Props) {
   return (
-    <section className="mb-20 px-4 md:px-0">
+    <section className="mb-20 px-4 md:px-0 text-black">
       {/* عنوان القسم */}
       <div className="mb-12 flex items-center gap-4 w-full">
         <h2
