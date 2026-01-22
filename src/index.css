@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 
-/* إجبار المتصفح على تجاهل Dark Mode */
-:root {
-  color-scheme: light;
+/* منع أي تأثير Dark Mode */
+/* إجبار كل الصفحة على Light Mode */
+html,
+body {
+  background-color: #FCD451 !important;
+  color: black !important;
 }
 
 @font-face {
