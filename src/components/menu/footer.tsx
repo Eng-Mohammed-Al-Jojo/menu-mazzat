@@ -16,7 +16,7 @@ export default function Footer() {
         <div className="space-y-3 text-center md:text-right">
 
           {/* Location */}
-          <div className="flex items-center gap-2 justify-center md:justify-end text-md md:text-lg font-[Cairo] text-black">
+          <div className="flex items-center gap-2 justify-center md:justify-end text-md md:text-lg font-[Cairo] text-white">
             <FaMapMarkerAlt className="text-[#FCD451]" />
             غزة - شارع الجلاء - شرق عمارة الزهارنة
           </div>
@@ -25,7 +25,7 @@ export default function Footer() {
           <div className="flex flex-col gap-1 items-center md:items-end">
             <a
               href="tel:+970597230040"
-              className="flex items-center gap-2 font-[Cairo] text-md md:text-lg text-black"
+              className="flex items-center gap-2 font-[Cairo] text-md md:text-lg text-white"
             >
               <FaPhoneAlt className="text-[#FCD451]" />
               0597230040
@@ -33,7 +33,7 @@ export default function Footer() {
 
             <a
               href="tel:+970567230041"
-              className="flex items-center gap-2 font-[Cairo] text-md md:text-lg text-black"
+              className="flex items-center gap-2 font-[Cairo] text-md md:text-lg text-white"
             >
               <FaPhoneAlt className="text-[#FCD451]" />
               0567230041
@@ -88,7 +88,7 @@ export default function Footer() {
             className="flex items-center gap-2"
           >
             <FaLaptopCode className="text-[#FCD451] text-xl md:text-2xl" />
-            <span className="font-[Almarai] font-bold tracking-wide text-sm md:text-md text-black">
+            <span className="font-[Almarai] font-bold tracking-wide text-sm md:text-md text-white">
               Eng. Mohammed Eljoujo
             </span>
           </a>
