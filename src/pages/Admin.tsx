@@ -436,7 +436,6 @@ export default function Admin() {
 
         <CategorySection
           categories={categories}
-          items={items}
           setPopup={setPopup}
           newCategoryName={newCategoryName}
           setNewCategoryName={setNewCategoryName}

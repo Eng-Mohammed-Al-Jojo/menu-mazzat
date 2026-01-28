@@ -7,6 +7,7 @@ import CategorySection from "./CategorySection";
 export interface Category {
   id: string;
   name: string;
+  available?: boolean; // الأقسام المتوفرة فقط
   createdAt?: number;
 }
 
@@ -51,6 +52,7 @@ export default function Menu() {
     color: "green" | "red";
   } | null>(null);
 
+  /* ================= Firebase Load ================= */
   useEffect(() => {
     let timeoutId: number | null = null;
     let firebaseLoaded = false;
@@ -68,7 +70,6 @@ export default function Menu() {
             setCategories(cached.categories || []);
             setItems(cached.items || []);
             setLoading(false);
-
             setToast({
               message: "الإنترنت ضعيف، تم تحميل آخر نسخة محفوظة",
               color: "red",
@@ -97,10 +98,10 @@ export default function Menu() {
           ? Object.entries(data).map(([id, v]: any) => ({
             id,
             name: v.name,
+            available: v.available === true, // ✅ فقط الأقسام اللي قيمتها true تظهر
             createdAt: v.createdAt || 0,
           }))
           : [];
-
         setCategories(cats);
         catsLoaded = true;
         if (itemsLoaded) finishFirebase();
@@ -112,61 +113,25 @@ export default function Menu() {
           ? Object.entries(data).map(([id, v]: any) => ({
             id,
             ...v,
+            visible: v.visible !== false,
             createdAt: v.createdAt || 0,
           }))
           : [];
-
         setItems(its);
         itemsLoaded = true;
         if (catsLoaded) finishFirebase();
       });
     };
 
-    const loadOffline = async () => {
-      try {
-        const res = await fetch("/menu-data.json");
-        const data = await res.json();
-
-        const cats = Object.entries(data.categories || {}).map(
-          ([id, v]: any) => ({
-            id,
-            name: v.name,
-            createdAt: v.createdAt || 0,
-          })
-        );
-
-        const its = Object.entries(data.items || {}).map(([id, v]: any) => ({
-          id,
-          ...v,
-          createdAt: v.createdAt || 0,
-        }));
-
-        setCategories(cats);
-        setItems(its);
-        setLoading(false);
-
-        setToast({
-          message: "أنت غير متصل – نسخة محلية ثابتة",
-          color: "red",
-        });
-        setTimeout(() => setToast(null), 4000);
-      } catch (e) {
-        setLoading(false);
-      }
-    };
-
     if (navigator.onLine) {
       loadOnline();
-    } else {
-      loadOffline();
     }
   }, []);
 
+  /* ================= Loading ================= */
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-linear-to-br from-[#FDE68A] to-[#FCD451] font-[Almarai] font-bold">
-
-        {/* الشعار مع حركة pulse + scale */}
         <div className="relative w-56 h-56 mb-6">
           <img
             src="/logo_mazzat.png"
@@ -188,6 +153,9 @@ export default function Menu() {
     );
   }
 
+  /* ================= Filter Buttons ================= */
+  const availableCategories = categories.filter(cat => cat.available);
+
   return (
     <main className="max-w-4xl mx-auto px-4 pb-20 space-y-8 font-[Alamiri] text-black">
       {toast && (
@@ -197,16 +165,14 @@ export default function Menu() {
             background:
               toast.color === "green"
                 ? "linear-gradient(to right, #FDE68A, #F59E0B)"
-                : toast.color === "red"
-                  ? "linear-gradient(to right, #D2000E, #9B111E)"
-                  : "linear-gradient(to right, #FCD451, #D2000E)",
+                : "linear-gradient(to right, #D2000E, #9B111E)",
           }}
         >
           {toast.message}
         </div>
       )}
 
-      {/* Filter */}
+      {/* =============== Filter Buttons =============== */}
       <div className="flex flex-wrap gap-3 justify-center">
         <button
           onClick={() => setActiveCategory(null)}
@@ -218,37 +184,31 @@ export default function Menu() {
           جميع الأصناف
         </button>
 
-        {categories
-          .filter((cat) => items.some((i) => i.categoryId === cat.id))
-          .map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2 rounded-full font-bold transition font-[Cairo] ${activeCategory === cat.id
-                ? "bg-[#D2000E] text-white shadow-lg text-sm md:text-md"
-                : "bg-white/80 text-black text-xs md:text-md"
-                }`}
-            >
-              {cat.name}
-            </button>
-          ))}
+        {availableCategories.map(cat => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`px-4 py-2 rounded-full font-bold transition font-[Cairo] ${activeCategory === cat.id
+              ? "bg-[#D2000E] text-white shadow-lg text-sm md:text-md"
+              : "bg-white/80 text-black text-xs md:text-md"
+              }`}
+          >
+            {cat.name}
+          </button>
+        ))}
       </div>
 
+      {/* =============== Display Sections =============== */}
       {(activeCategory
-        ? categories.filter((c) => c.id === activeCategory)
-        : categories
-      ).map((cat) => {
-        const catItems = items.filter((i) => i.categoryId === cat.id);
-        if (!catItems.length) return null;
-
-        return (
-          <CategorySection
-            key={cat.id}
-            category={cat}
-            items={catItems}
-          />
-        );
-      })}
+        ? availableCategories.filter(c => c.id === activeCategory)
+        : availableCategories
+      ).map(cat => (
+        <CategorySection
+          key={cat.id}
+          category={cat}
+          items={items.filter(i => i.categoryId === cat.id)}
+        />
+      ))}
     </main>
   );
 }
