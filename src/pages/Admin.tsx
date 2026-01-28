@@ -290,8 +290,15 @@ export default function Admin() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FCD451]" dir="rtl">
         {resetPasswordPopup && (
-          <div className="fixed inset-0 bg-black/80 flex justify-center items-center z-50">
-            <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-sm">
+          <div className="fixed inset-0 bg-[#FCD451] flex justify-center items-center z-50">
+            <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-sm border-4 border-[#D2000E]">
+              <div className="flex justify-center mb-4">
+                <img
+                  src="/logo_mazzat.png"
+                  alt="mazzat-logo"
+                  className="w-32 h-auto object-contain"
+                />
+              </div>
               <h2 className="text-xl font-bold mb-4 text-[#D2000E] text-center">
                 إعادة تعيين كلمة المرور
               </h2>
@@ -330,6 +337,13 @@ export default function Admin() {
             className="bg-white p-6 rounded-3xl w-full max-w-xs border-4"
             style={{ borderColor: "#D2000E" }}
           >
+            <div className="flex justify-center mb-4">
+              <img
+                src="/logo_mazzat.png"
+                alt="mazzat-logo"
+                className="w-32 h-auto object-contain"
+              />
+            </div>
             <h1 className="text-xl font-bold mb-4 text-center text-[#D2000E]">دخول الأدمن</h1>
             <input
               type="email"
