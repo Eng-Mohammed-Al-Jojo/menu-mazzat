@@ -164,12 +164,12 @@ export default function Menu() {
       )}
 
       {/* =============== Filter Buttons =============== */}
-      <div className="flex flex-wrap gap-3 justify-center sticky top-2 z-30">
+      <div className="flex flex-wrap gap-3 justify-center top-2 z-30">
         <button
           onClick={() => setActiveCategory(null)}
           className={`px-4 py-2 rounded-full font-bold transition-all duration-200 font-[Cairo] ${activeCategory === null
-              ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
-              : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
+            ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
+            : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
             }`}
         >
           جميع الأصناف
@@ -180,8 +180,8 @@ export default function Menu() {
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
             className={`px-4 py-2 rounded-full font-bold transition-all duration-200 font-[Cairo] ${activeCategory === cat.id
-                ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
-                : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
+              ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
+              : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
               }`}
           >
             {cat.name}
