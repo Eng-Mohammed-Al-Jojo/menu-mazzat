@@ -16,6 +16,8 @@ export interface Category {
   name: string;
   createdAt: number;
   available: boolean;
+  order: number;
+
 
 }
 

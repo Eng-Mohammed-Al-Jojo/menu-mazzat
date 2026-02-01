@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* ================= ORDERED Menu Component ================= */
+import { useEffect, useState, useMemo } from "react";
 import { db } from "../../firebase";
 import { ref, onValue } from "firebase/database";
 import CategorySection from "./CategorySection";
@@ -7,7 +8,8 @@ import CategorySection from "./CategorySection";
 export interface Category {
   id: string;
   name: string;
-  available?: boolean; // الأقسام المتوفرة فقط
+  available?: boolean;
+  order?: number;
   createdAt?: number;
 }
 
@@ -26,11 +28,7 @@ export interface Item {
 const saveToLocal = (cats: Category[], its: Item[]) => {
   localStorage.setItem(
     "menu_cache",
-    JSON.stringify({
-      categories: cats,
-      items: its,
-      savedAt: Date.now(),
-    })
+    JSON.stringify({ categories: cats, items: its, savedAt: Date.now() })
   );
 };
 
@@ -46,11 +44,7 @@ export default function Menu() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
-  const [toast, setToast] = useState<{
-    message: string;
-    color: "green" | "red";
-  } | null>(null);
+  const [toast, setToast] = useState<{ message: string; color: "green" | "red" } | null>(null);
 
   /* ================= Firebase Load ================= */
   useEffect(() => {
@@ -63,17 +57,14 @@ export default function Menu() {
       let catsLoaded = false;
       let itemsLoaded = false;
 
-      timeoutId = setTimeout(() => {
+      timeoutId = window.setTimeout(() => {
         if (!firebaseLoaded) {
           const cached = loadFromLocal();
           if (cached) {
             setCategories(cached.categories || []);
             setItems(cached.items || []);
             setLoading(false);
-            setToast({
-              message: "الإنترنت ضعيف، تم تحميل آخر نسخة محفوظة",
-              color: "red",
-            });
+            setToast({ message: "الإنترنت ضعيف، تم تحميل آخر نسخة محفوظة", color: "red" });
             setTimeout(() => setToast(null), 4000);
           }
         }
@@ -84,11 +75,7 @@ export default function Menu() {
         saveToLocal(cats, its);
         setLoading(false);
         if (timeoutId) clearTimeout(timeoutId);
-
-        setToast({
-          message: "تم التحميل من قاعدة البيانات",
-          color: "green",
-        });
+        setToast({ message: "تم التحميل من قاعدة البيانات", color: "green" });
         setTimeout(() => setToast(null), 3000);
       };
 
@@ -98,11 +85,12 @@ export default function Menu() {
           ? Object.entries(data).map(([id, v]: any) => ({
             id,
             name: v.name,
-            available: v.available === true, // ✅ فقط الأقسام اللي قيمتها true تظهر
+            available: v.available === true,
+            order: Number(v.order ?? 9999), // ✅ حل مشكلة الترتيب
             createdAt: v.createdAt || 0,
           }))
           : [];
-        setCategories(cats);
+        setCategories([...cats]); // ✅ reference جديد عشان React re-render
         catsLoaded = true;
         if (itemsLoaded) finishFirebase();
       });
@@ -117,18 +105,23 @@ export default function Menu() {
             createdAt: v.createdAt || 0,
           }))
           : [];
-        setItems(its);
+        setItems([...its]); // ✅ reference جديد
         itemsLoaded = true;
         if (catsLoaded) finishFirebase();
       });
     };
 
-    if (navigator.onLine) {
-      loadOnline();
-    }
+    if (navigator.onLine) loadOnline();
   }, []);
 
-  /* ================= Loading ================= */
+  /* ================= ORDERED Categories (useMemo safe) ================= */
+  const availableCategories = useMemo(() => {
+    return [...categories]
+      .filter((cat) => cat.available)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }, [categories]);
+
+  /* ================= Loading Screen ================= */
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-linear-to-br from-[#FDE68A] to-[#FCD451] font-[Almarai] font-bold">
@@ -153,9 +146,7 @@ export default function Menu() {
     );
   }
 
-  /* ================= Filter Buttons ================= */
-  const availableCategories = categories.filter(cat => cat.available);
-
+  /* ================= Tabs / Filter Buttons ================= */
   return (
     <main className="max-w-4xl mx-auto px-4 pb-20 space-y-8 font-[Alamiri] text-black">
       {toast && (
@@ -173,24 +164,24 @@ export default function Menu() {
       )}
 
       {/* =============== Filter Buttons =============== */}
-      <div className="flex flex-wrap gap-3 justify-center">
+      <div className="flex flex-wrap gap-3 justify-center sticky top-2 z-30">
         <button
           onClick={() => setActiveCategory(null)}
-          className={`px-4 py-2 rounded-full font-bold transition font-[Cairo] ${activeCategory === null
-            ? "bg-[#D2000E] text-white shadow-lg text-sm md:text-md"
-            : "bg-white/80 text-black text-xs md:text-md"
+          className={`px-4 py-2 rounded-full font-bold transition-all duration-200 font-[Cairo] ${activeCategory === null
+              ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
+              : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
             }`}
         >
           جميع الأصناف
         </button>
 
-        {availableCategories.map(cat => (
+        {availableCategories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-full font-bold transition font-[Cairo] ${activeCategory === cat.id
-              ? "bg-[#D2000E] text-white shadow-lg text-sm md:text-md"
-              : "bg-white/80 text-black text-xs md:text-md"
+            className={`px-4 py-2 rounded-full font-bold transition-all duration-200 font-[Cairo] ${activeCategory === cat.id
+                ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
+                : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
               }`}
           >
             {cat.name}
@@ -200,13 +191,13 @@ export default function Menu() {
 
       {/* =============== Display Sections =============== */}
       {(activeCategory
-        ? availableCategories.filter(c => c.id === activeCategory)
+        ? availableCategories.filter((c) => c.id === activeCategory)
         : availableCategories
-      ).map(cat => (
+      ).map((cat) => (
         <CategorySection
           key={cat.id}
           category={cat}
-          items={items.filter(i => i.categoryId === cat.id)}
+          items={items.filter((i) => i.categoryId === cat.id)}
         />
       ))}
     </main>

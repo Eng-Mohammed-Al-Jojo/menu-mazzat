@@ -1,9 +1,53 @@
 import React, { useState } from "react";
-import { FiPlus, FiTrash2, FiEdit, FiCheck } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiEdit, FiCheck, FiMenu } from "react-icons/fi";
 import { db } from "../../firebase";
 import { ref, update } from "firebase/database";
 import type { PopupState, Category } from "./types";
 
+/* ===== dnd-kit ===== */
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+/* ===== Sortable Item with Drag Handle ===== */
+function SortableItem({
+  id,
+  children,
+}: {
+  id: string;
+  children: (props: {
+    setActivatorNodeRef: (node: HTMLElement | null) => void;
+    listeners: any;
+    attributes: any;
+  }) => React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {children({ setActivatorNodeRef, listeners, attributes })}
+    </div>
+  );
+}
+
+/* ===== Component ===== */
 interface Props {
   categories: Record<string, Category>;
   setPopup: (popup: PopupState) => void;
@@ -48,6 +92,37 @@ const CategorySection: React.FC<Props> = ({
     }
   };
 
+  /* ===== Sort by order ===== */
+  const sortedCategories = Object.entries(categories).sort(
+    (a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)
+  );
+
+  /* ===== Save order after drag ===== */
+  const handleDragEnd = async (event: any) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = sortedCategories.findIndex(
+      ([id]) => id === active.id
+    );
+    const newIndex = sortedCategories.findIndex(
+      ([id]) => id === over.id
+    );
+
+    const newOrder = arrayMove(sortedCategories, oldIndex, newIndex);
+
+    const updates: Record<string, any> = {};
+    newOrder.forEach(([id], index) => {
+      updates[`categories/${id}/order`] = index;
+    });
+
+    try {
+      await update(ref(db), updates);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div
       className="bg-white p-4 rounded-3xl mb-6 border-4"
@@ -71,91 +146,104 @@ const CategorySection: React.FC<Props> = ({
         </button>
       </div>
 
-      {/* عرض الأقسام */}
-      <div className="flex flex-col gap-2">
-        {Object.keys(categories).map((id) => {
-          const cat = categories[id];
+      {/* عرض الأقسام مع Drag & Drop */}
+      <DndContext
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={sortedCategories.map(([id]) => id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex flex-col gap-2">
+            {sortedCategories.map(([id, cat]) => (
+              <SortableItem key={id} id={id}>
+                {({ setActivatorNodeRef, listeners, attributes }) => (
+                  <div className="bg-gray-100 px-3 py-2 rounded-xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-          return (
-            <div
-              key={id}
-              className="bg-gray-100 px-3 py-2 rounded-xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-            >
-              {/* الاسم */}
-              <div className="flex items-center gap-2 flex-1">
-                {editingId === id ? (
-                  <>
-                    <input
-                      className="flex-1 p-1 border rounded-xl"
-                      value={tempName}
-                      onChange={(e) => setTempName(e.target.value)}
-                    />
-                    <button
-                      onClick={() => saveEdit(id)}
-                      className="text-green-600 hover:text-green-800"
-                    >
-                      <FiCheck />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex-1 font-medium">{cat.name}</span>
+                    {/* الاسم + مقبض السحب */}
+                    <div className="flex items-center gap-2 flex-1">
+                      <button
+                        ref={setActivatorNodeRef}
+                        {...listeners}
+                        {...attributes}
+                        className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-700 touch-none"
+                      >
+                        <FiMenu />
+                      </button>
 
-                  </>
+                      {editingId === id ? (
+                        <>
+                          <input
+                            className="flex-1 p-1 border rounded-xl"
+                            value={tempName}
+                            onChange={(e) => setTempName(e.target.value)}
+                          />
+                          <button
+                            onClick={() => saveEdit(id)}
+                            className="text-green-600 hover:text-green-800"
+                          >
+                            <FiCheck />
+                          </button>
+                        </>
+                      ) : (
+                        <span className="flex-1 font-medium">
+                          {cat.name}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* الجهة اليمنى */}
+                    <div className="flex items-center justify-between sm:justify-end gap-4">
+                      {/* تعديل + حذف */}
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => startEditing(id, cat.name)}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <FiEdit />
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            setPopup({ type: "deleteCategory", id })
+                          }
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <FiTrash2 />
+                        </button>
+                      </div>
+
+                      {/* السويتش */}
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            toggleAvailability(id, cat.available)
+                          }
+                          className={`relative w-10 h-5 rounded-full transition-all ${cat.available
+                              ? "bg-green-500"
+                              : "bg-gray-400"
+                            }`}
+                        >
+                          <span
+                            className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${cat.available
+                                ? "translate-x-5"
+                                : "translate-x-0.5"
+                              }`}
+                          />
+                        </button>
+                        <span className="text-[11px] font-bold">
+                          {cat.available ? "متوفر" : "غير متوفر"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </div>
-
-              {/* الجهة اليمنى */}
-              <div className="flex flex-row sm:flex-row items-center justify-between sm:justify-end gap-4">
-
-                {/* تعديل + حذف (جنب بعض على الموبايل) */}
-                <div className="flex items-center gap-3 order-1">
-                  <button
-                    onClick={() => startEditing(id, cat.name)}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
-                    <FiEdit />
-                  </button>
-
-                  <button
-                    onClick={() => setPopup({ type: "deleteCategory", id })}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    <FiTrash2 />
-                  </button>
-                </div>
-
-                {/* السويتش */}
-                <div className="flex items-center gap-2 order-2">
-                  <button
-                    onClick={() => toggleAvailability(id, cat.available)}
-                    className={`
-          relative w-10 h-5 rounded-full transition-all duration-300 ease-in-out
-          ${cat.available ? "bg-green-500" : "bg-gray-400"}
-        `}
-                  >
-                    <span
-                      className={`
-            absolute top-0.5 w-4 h-4 rounded-full bg-white shadow
-            transition-all duration-300 ease-in-out
-            ${cat.available ? "translate-x-5 scale-105" : "translate-x-0.5"}
-          `}
-                    />
-                  </button>
-
-                  <span
-                    className={`text-[11px] font-bold ${cat.available ? "text-green-700" : "text-gray-600"
-                      }`}
-                  >
-                    {cat.available ? "متوفر" : "غير متوفر"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-          );
-        })}
-      </div>
+              </SortableItem>
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };
