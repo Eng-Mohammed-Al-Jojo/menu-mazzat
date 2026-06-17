@@ -5,6 +5,7 @@ export type PopupType =
   | "deleteCategory"
   | "editItem"
   | "deleteItem"
+  | "selectImage"
   | null;
 
 export interface PopupState {
@@ -22,8 +23,6 @@ export interface Category {
 }
 
 export interface Item {
-  id(id: any, visible: boolean): void;
-  image: any;
   name: string;
   price: string;
   priceTw?: string;
@@ -31,4 +30,5 @@ export interface Item {
   categoryId: string;
   visible: boolean;
   createdAt: number;
+  image?: string;
 }

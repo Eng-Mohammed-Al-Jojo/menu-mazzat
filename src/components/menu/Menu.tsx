@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import { db } from "../../firebase";
 import { ref, onValue } from "firebase/database";
 import CategorySection from "./CategorySection";
+import ItemDetailModal from "./ItemDetailModal";
 
 /* ================= Types ================= */
 export interface Category {
@@ -22,6 +23,7 @@ export interface Item {
   categoryId: string;
   visible?: boolean;
   createdAt?: number;
+  image?: string;
 }
 
 /* ================= LocalStorage ================= */
@@ -45,6 +47,8 @@ export default function Menu() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; color: "green" | "red" } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
 
   /* ================= Firebase Load ================= */
   useEffect(() => {
@@ -120,6 +124,16 @@ export default function Menu() {
       .filter((cat) => cat.available)
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }, [categories]);
+
+  const handleImageClick = (item: Item) => {
+    setSelectedItem(item);
+    setDetailModalOpen(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setDetailModalOpen(false);
+    setSelectedItem(null);
+  };
 
   /* ================= Loading Screen ================= */
   if (loading) {
@@ -198,8 +212,18 @@ export default function Menu() {
           key={cat.id}
           category={cat}
           items={items.filter((i) => i.categoryId === cat.id)}
+          onImageClick={handleImageClick}
         />
       ))}
+
+      {/* Item Detail Modal */}
+      {selectedItem && (
+        <ItemDetailModal
+          item={selectedItem}
+          isOpen={detailModalOpen}
+          onClose={handleCloseDetailModal}
+        />
+      )}
     </main>
   );
 }

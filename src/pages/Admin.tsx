@@ -38,12 +38,14 @@ export default function Admin() {
     priceTw: string;
     selectedCategory: string;
     itemIngredients?: string;
+    itemImage?: string;
   }>({
     itemName: "",
     itemPrice: "",
     priceTw: "",
     selectedCategory: "",
     itemIngredients: "",
+    itemImage: "",
   });
   const [editItemId, setEditItemId] = useState("");
   const [toast, setToast] = useState("");
@@ -157,6 +159,7 @@ export default function Admin() {
       priceTw: editItemValues.priceTw || "",
       categoryId: editItemValues.selectedCategory,
       ingredients: editItemValues.itemIngredients || "",
+      image: editItemValues.itemImage || null,
     });
     setPopup({ type: null });
     setEditItemId("");
@@ -166,8 +169,20 @@ export default function Admin() {
       priceTw: "",
       selectedCategory: "",
       itemIngredients: "",
+      itemImage: "",
     });
     setToast("  تم التعديل بنجاح ✅");
+    setTimeout(() => setToast(""), 4000);
+  };
+
+  const updateItemImage = async (itemId: string, imageName: string) => {
+    if (!imageName) {
+      await update(ref(db, `items/${itemId}`), { image: null });
+      setToast("  تم حذف الصورة بنجاح ✅");
+    } else {
+      await update(ref(db, `items/${itemId}`), { image: imageName });
+      setToast("  تم تحديث الصورة بنجاح ✅");
+    }
     setTimeout(() => setToast(""), 4000);
   };
 
@@ -288,34 +303,35 @@ export default function Admin() {
   // ================= LOGIN UI =================
   if (!authOk) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FCD451]" dir="rtl">
+      <div className="min-h-screen flex items-center justify-center bg-[#FCD451] p-4" dir="rtl">
         {resetPasswordPopup && (
-          <div className="fixed inset-0 bg-[#FCD451] flex justify-center items-center z-50">
-            <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-sm border-4 border-[#D2000E]">
-              <div className="flex justify-center mb-4">
+          <div className="fixed inset-0 bg-[#FCD451] flex justify-center items-center z-50 p-4">
+            <div className="admin-card admin-modal-content p-8 w-full max-w-sm">
+              <div className="flex justify-center mb-6">
                 <img
                   src="/logo_mazzat.png"
                   alt="mazzat-logo"
                   className="w-32 h-auto object-contain"
                 />
               </div>
-              <h2 className="text-xl font-bold mb-4 text-[#D2000E] text-center">
+              <h2 className="text-xl font-bold mb-6 text-[#D2000E] text-center">
                 إعادة تعيين كلمة المرور
               </h2>
+              <label className="admin-label">البريد الإلكتروني</label>
               <input
                 type="email"
                 placeholder="أدخل بريدك الإلكتروني"
-                className="w-full p-3 border rounded-xl mb-3"
+                className="admin-input mb-4"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
               />
               {resetMessage && (
-                <p className="text-sm text-center text-green-600 mb-2">{resetMessage}</p>
+                <p className="text-sm text-center text-green-600 mb-4">{resetMessage}</p>
               )}
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-3">
                 <button
                   onClick={handleResetPassword}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition"
+                  className="admin-btn admin-btn-primary"
                 >
                   إرسال الرابط
                 </button>
@@ -324,7 +340,7 @@ export default function Admin() {
                     setResetPasswordPopup(false);
                     setResetMessage("");
                   }}
-                  className="px-4 py-2 rounded-xl border hover:bg-gray-100 transition"
+                  className="admin-btn admin-btn-secondary"
                 >
                   إلغاء
                 </button>
@@ -333,41 +349,40 @@ export default function Admin() {
           </div>
         )}
         {!resetPasswordPopup && (
-          <div
-            className="bg-white p-6 rounded-3xl w-full max-w-xs border-4"
-            style={{ borderColor: "#D2000E" }}
-          >
-            <div className="flex justify-center mb-4">
+          <div className="admin-card admin-animate-in p-8 w-full max-w-sm">
+            <div className="flex justify-center mb-6">
               <img
                 src="/logo_mazzat.png"
                 alt="mazzat-logo"
                 className="w-32 h-auto object-contain"
               />
             </div>
-            <h1 className="text-xl font-bold mb-4 text-center text-[#D2000E]">دخول الأدمن</h1>
+            <h1 className="text-xl font-bold mb-6 text-center text-[#D2000E]">دخول الأدمن</h1>
+            <label className="admin-label">اسم المستخدم (Email)</label>
             <input
               type="email"
-              className="w-full p-3 border rounded-xl mb-3"
-              placeholder="اسم المستخدم (Email)"
+              className="admin-input mb-4"
+              placeholder="example@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <label className="admin-label">كلمة المرور</label>
             <input
               type="password"
-              className="w-full p-3 border rounded-xl mb-4"
-              placeholder="كلمة المرور"
+              className="admin-input mb-6"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
               onClick={login}
-              className="w-full py-3 rounded-xl font-bold bg-[#FCD451] text-[#D2000E] hover:cursor-pointer hover:bg-[#FCD451]/80"
+              className="admin-btn admin-btn-accent w-full py-3 text-base"
             >
               دخول
             </button>
             <button
               onClick={() => setResetPasswordPopup(true)}
-              className="mt-3 text-sm text-red-600 hover:underline hover:cursor-pointer"
+              className="mt-4 w-full text-sm text-[#D2000E] hover:underline transition-colors duration-200"
             >
               نسيت كلمة المرور؟
             </button>
@@ -379,15 +394,15 @@ export default function Admin() {
 
   // ================= ADMIN PANEL =================
   return (
-    <div className="min-h-screen w-full bg-[#FCD451] flex justify-center py-5 md:p-6" dir="rtl">
+    <div className="min-h-screen w-full bg-[#FCD451] flex justify-center py-6 md:py-8 px-4 md:px-6" dir="rtl">
       {toast && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-[#D2000E] text-white px-6 py-3 rounded-xl shadow-lg transition-all">
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-[#D2000E] text-white px-6 py-3 rounded-xl shadow-lg admin-animate-in">
           {toast}
         </div>
       )}
       {loading && (
-        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-40">
-          <div className="bg-white p-6 rounded-xl shadow-lg text-black font-bold">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-40 admin-modal-overlay">
+          <div className="admin-card admin-modal-content p-8 text-[#231F20] font-bold">
             جاري تحميل البيانات...
           </div>
         </div>
@@ -396,41 +411,43 @@ export default function Admin() {
       {/* Inputs مخفية للملفات */}
       <input type="file" accept=".xlsx" id="excelUpload" hidden onChange={importFromExcel} />
 
-      <div className="w-full max-w-7xl px-8 sm:px-8 md:px-24">
-        <div className="flex justify-between items-center mb-6 flex-wrap">
-          <h1 className="text-3xl font-bold text-[#D2000E] mb-4">لوحة تحكم Mazzat</h1>
-          <div className="flex gap-2 flex-wrap">
-            {/* Excel Buttons */}
-            <button
-              onClick={exportToExcel}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-600 text-white font-bold hover:bg-green-500 transition hover:cursor-pointer"
-            >
-              <FiUpload size={18} />
-            </button>
-            <button
-              onClick={() => document.getElementById("excelUpload")?.click()}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition hover:cursor-pointer"
-            >
-              <FiDownload size={18} />
-            </button>
-
-            {/* JSON Buttons */}
-            <button
-              onClick={exportToJSON}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#D2000E] text-white font-bold hover:bg-[#d02c37] transition hover:cursor-pointer"
-            >
-              backup
-              <FiUpload size={18} />
-            </button>
-
-
-            {/* Logout */}
-            <button
-              onClick={() => setPopup({ type: "logout" })}
-              className="px-4 py-2 rounded-xl font-bold bg-[#d60208] text-white flex items-center gap-1 hover:text-black hover:bg-[#d2343a] hover:cursor-pointer"
-            >
-              <FiLogOut /> خروج
-            </button>
+      <div className="w-full max-w-7xl space-y-6">
+        <div className="admin-card admin-animate-in p-5 md:p-6">
+          <div className="flex justify-between items-center flex-wrap gap-4">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-[#D2000E]">لوحة تحكم Mazzat</h1>
+              <p className="text-sm text-gray-600 mt-1">إدارة الأقسام والأصناف</p>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              <button
+                onClick={exportToExcel}
+                className="admin-btn admin-btn-success"
+                title="تصدير Excel"
+              >
+                <FiUpload size={18} />
+              </button>
+              <button
+                onClick={() => document.getElementById("excelUpload")?.click()}
+                className="admin-btn admin-btn-primary"
+                title="استيراد Excel"
+              >
+                <FiDownload size={18} />
+              </button>
+              <button
+                onClick={exportToJSON}
+                className="admin-btn admin-btn-primary"
+                title="نسخ احتياطي JSON"
+              >
+                backup
+                <FiUpload size={18} />
+              </button>
+              <button
+                onClick={() => setPopup({ type: "logout" })}
+                className="admin-btn admin-btn-danger"
+              >
+                <FiLogOut size={18} /> خروج
+              </button>
+            </div>
           </div>
         </div>
 
@@ -457,10 +474,12 @@ export default function Admin() {
                   priceTw: item.priceTw || "",
                   selectedCategory: item.categoryId,
                   itemIngredients: item.ingredients || "",
+                  itemImage: item.image || "",
                 });
               }
             }
           }}
+          onUpdateItemImage={updateItemImage}
         />
 
         <Popup

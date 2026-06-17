@@ -4,11 +4,12 @@ import type { Category, Item } from "./Menu";
 interface Props {
   category: Category;
   items: Item[];
+  onImageClick?: (item: Item) => void;
 }
 
-export default function CategorySection({ category, items }: Props) {
+export default function CategorySection({ category, items, onImageClick }: Props) {
   return (
-    <section className="mb-20 px-4 md:px-0 text-black">
+    <section className="mb-12 px-0 md:px-0 text-black">
       {/* عنوان القسم */}
       <div className="mb-12 flex items-center gap-4 w-full">
         <h2
@@ -28,9 +29,9 @@ export default function CategorySection({ category, items }: Props) {
       </div>
 
       {/* قائمة الأصناف */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
         {items.map((item) => (
-          <ItemRow key={item.id} item={item} />
+          <ItemRow key={item.id} item={item} onImageClick={onImageClick} />
         ))}
       </div>
     </section>

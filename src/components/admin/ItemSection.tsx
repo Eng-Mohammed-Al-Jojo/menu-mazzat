@@ -1,23 +1,27 @@
 import React, { useState } from "react";
 import { ref, push, update } from "firebase/database";
 import { db } from "../../firebase";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiImage } from "react-icons/fi";
 import { type PopupState } from "./types";
+import ImagePickerModal from "./ImagePickerModal";
 
 interface Props {
   categories: any;
   items: any;
   popup: PopupState;
   setPopup: (popup: PopupState) => void;
+  onUpdateItemImage?: (itemId: string, imageName: string) => void;
 }
 
-const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
+const ItemSection: React.FC<Props> = ({ categories, items, setPopup, onUpdateItemImage }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemIngredients, setItemIngredients] = useState("");
   const [itemPrice, setItemPrice] = useState("");
   const [quickSearch, setQuickSearch] = useState("");
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const addItem = async () => {
     if (!selectedCategory || !itemName || !itemPrice) return;
@@ -39,17 +43,25 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
     await update(ref(db, `items/${id}`), { visible: !visible });
   };
 
+  const handleSelectImage = (imageName: string) => {
+    if (selectedItemId && onUpdateItemImage) {
+      onUpdateItemImage(selectedItemId, imageName);
+    }
+  };
+
+  const openImagePicker = (itemId: string) => {
+    setSelectedItemId(itemId);
+    setImagePickerOpen(true);
+  };
+
   return (
-    <div
-      className="bg-white p-6 rounded-3xl border-4"
-      style={{ borderColor: "#D2000E" }}
-    >
-      <h2 className="font-bold mb-4 text-2xl text-[#231F20]">الأصناف</h2>
+    <div className="admin-card admin-animate-in p-5 md:p-6">
+      <h2 className="admin-section-header">الأصناف</h2>
 
       {/* ADD ITEM */}
-      <div className="flex gap-2 flex-wrap mb-6">
+      <div className="grid gap-3 mb-6">
         <select
-          className="w-full p-2 border rounded-xl mb-2"
+          className="admin-select"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
@@ -62,21 +74,21 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
         </select>
 
         <input
-          className="w-full p-2 border rounded-xl mb-2"
+          className="admin-input"
           placeholder="اسم الصنف"
           value={itemName}
           onChange={(e) => setItemName(e.target.value)}
         />
 
         <input
-          className="w-full p-2 border rounded-xl mb-2"
+          className="admin-input"
           placeholder="المكونات أو الوصف (اختياري)"
           value={itemIngredients}
           onChange={(e) => setItemIngredients(e.target.value)}
         />
 
         <input
-          className="w-full p-2 border rounded-xl mb-3"
+          className="admin-input"
           placeholder="الأسعار (افصل بين الأسعار بفاصلة)"
           value={itemPrice}
           onChange={(e) => setItemPrice(e.target.value)}
@@ -84,20 +96,17 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
 
         <button
           onClick={addItem}
-          className="py-2 rounded-xl font-bold bg-[#D2000E] grow text-[#FCD451]
-          hover:bg-[#e2444f] hover:cursor-pointer"
+          className="admin-btn admin-btn-primary w-full py-2.5"
         >
           إضافة الصنف
         </button>
       </div>
 
       {/* QUICK SEARCH */}
-      <div
-        className="bg-white p-4 rounded-3xl border-3"
-        style={{ borderColor: "#D2000E" }}
-      >
+      <div className="rounded-xl border border-black/5 bg-gray-50/50 p-4 md:p-5">
+        <label className="admin-label">بحث سريع</label>
         <input
-          className="w-full p-2 border rounded-xl mb-4"
+          className="admin-input mb-5"
           placeholder="ابحث بسرعة عن صنف أو سعر..."
           value={quickSearch}
           onChange={(e) => setQuickSearch(e.target.value)}
@@ -127,31 +136,30 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
           const isOpen = openCategory === catId;
 
           return (
-            <div key={catId} className="mb-4">
+            <div key={catId} className="mb-4 last:mb-0">
               {/* كارد القسم */}
               <div
                 onClick={() =>
                   setOpenCategory(isOpen ? null : catId)
                 }
-                className="bg-gray-100 text-black p-4 rounded-2xl
-                flex justify-between items-center cursor-pointer"
+                className="admin-accordion p-4 flex justify-between items-center cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <span className="font-bold text-lg">
+                  <span className="font-bold text-lg text-[#231F20]">
                     {category.name}
                   </span>
-                  <span className="bg-[#fbe395] px-3 py-1 text-sm rounded-full">
+                  <span className="bg-[#FCD451] text-[#D2000E] px-3 py-0.5 text-sm font-semibold rounded-full">
                     {categoryItems.length}
                   </span>
                 </div>
-                <span className="text-2xl">
+                <span className="text-xl font-light text-[#D2000E] transition-transform duration-200">
                   {isOpen ? "−" : "+"}
                 </span>
               </div>
 
               {/* الأصناف */}
               {isOpen && (
-                <div className="mt-3 space-y-3">
+                <div className="mt-3 space-y-2">
                   {categoryItems.map((id) => {
                     const item = items[id];
                     const prices = String(item.price)
@@ -161,35 +169,49 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
                     return (
                       <div
                         key={id}
-                        className={`p-3 rounded-xl flex flex-col sm:flex-row justify-between ${item.visible
-                          ? "bg-gray-50 hover:shadow-md"
-                          : "bg-gray-200 opacity-60"
+                        className={`admin-row p-4 rounded-xl flex flex-col sm:flex-row justify-between gap-3 border border-black/5 ${item.visible
+                          ? "bg-white"
+                          : "bg-gray-100 opacity-70"
                           }`}
                       >
-                        <div>
-                          <p className="font-bold text-[#231F20]">
-                            {item.name}
-                          </p>
-                          {item.ingredients && (
-                            <p className="text-sm text-gray-600">
-                              مكونات: {item.ingredients}
-                            </p>
-                          )}
-                          <p className="text-sm text-gray-500">
-                            {prices
-                              .map((p) => `${p}₪`)
-                              .join(" / ")}
-                          </p>
+                        <div className="flex-1">
+                          <div className="flex items-start gap-4">
+                            {item.image && (
+                              <img
+                                src={`/images/${item.image}`}
+                                alt={item.name}
+                                className="w-16 h-16 object-cover rounded-xl border border-black/5 shadow-sm"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src = "/logo_mazzat.png";
+                                }}
+                              />
+                            )}
+                            <div className="space-y-1">
+                              <p className="font-bold text-[#231F20]">
+                                {item.name}
+                              </p>
+                              {item.ingredients && (
+                                <p className="text-sm text-gray-500 leading-relaxed">
+                                  مكونات: {item.ingredients}
+                                </p>
+                              )}
+                              <p className="text-sm font-semibold text-[#D2000E]">
+                                {prices
+                                  .map((p) => `${p}₪`)
+                                  .join(" / ")}
+                              </p>
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="flex gap-2 mt-3 sm:mt-0">
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           <button
                             onClick={() =>
                               toggleItem(id, item.visible)
                             }
-                            className={`px-3 py-1 rounded-xl text-white ${item.visible
-                              ? "bg-green-600"
-                              : "bg-gray-500"
+                            className={`admin-btn admin-btn-card admin-btn-card-text ${item.visible
+                              ? "admin-btn-success"
+                              : "admin-btn-secondary"
                               }`}
                           >
                             {item.visible
@@ -198,12 +220,20 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
                           </button>
 
                           <button
+                            onClick={() => openImagePicker(id)}
+                            className={`admin-btn admin-btn-card admin-btn-card-icon ${item.image ? "admin-btn-primary" : "admin-btn-secondary"}`}
+                            title={item.image ? "تغيير الصورة" : "اختيار صورة"}
+                          >
+                            <FiImage size={16} />
+                          </button>
+
+                          <button
                             onClick={() =>
                               setPopup({ type: "editItem", id })
                             }
-                            className="bg-yellow-400 px-3 py-1 rounded-xl"
+                            className="admin-btn admin-btn-accent admin-btn-card admin-btn-card-icon"
                           >
-                            <FiEdit />
+                            <FiEdit size={16} />
                           </button>
 
                           <button
@@ -213,9 +243,9 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
                                 id,
                               })
                             }
-                            className="bg-red-600 text-white px-3 py-1 rounded-xl"
+                            className="admin-btn admin-btn-danger admin-btn-card admin-btn-card-icon"
                           >
-                            <FiTrash2 />
+                            <FiTrash2 size={16} />
                           </button>
                         </div>
                       </div>
@@ -227,6 +257,16 @@ const ItemSection: React.FC<Props> = ({ categories, items, setPopup }) => {
           );
         })}
       </div>
+
+      <ImagePickerModal
+        isOpen={imagePickerOpen}
+        onClose={() => {
+          setImagePickerOpen(false);
+          setSelectedItemId(null);
+        }}
+        onSelectImage={handleSelectImage}
+        currentImage={selectedItemId ? items[selectedItemId]?.image : undefined}
+      />
     </div>
   );
 };

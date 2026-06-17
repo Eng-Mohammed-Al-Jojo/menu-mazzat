@@ -2,24 +2,26 @@ import { type Item } from "./Menu";
 
 interface Props {
   item: Item;
+  onImageClick?: (item: Item) => void;
 }
 
-export default function ItemRow({ item }: Props) {
+export default function ItemRow({ item, onImageClick }: Props) {
   const prices = String(item.price).split(",");
   const unavailable = item.visible === false;
+  const imageUrl = item.image ? `/images/${item.image}` : "/logo_mazzat.png";
 
   return (
     <div
       className={`
-        rounded-3xl p-0.5
+        rounded-3xl p-0
         transition-all duration-300
         ${unavailable ? "opacity-60" : "hover:scale-105"}
       `}
     >
       <div
         className={`
-          relative rounded-4xl px-5 py-3
-          flex items-center justify-between gap-6
+          relative rounded-4xl px-4 py-3
+          flex items-center justify-between gap-4
           bg-linear-to-r from-[#FDE68A] to-[#FCD451]
           border-2 border-yellow-400/40
           shadow-inner shadow-yellow-300/30
@@ -32,6 +34,19 @@ export default function ItemRow({ item }: Props) {
         {!unavailable && (
           <div className="absolute inset-0 rounded-4xl bg-yellow-300/10 animate-pulse z-0"></div>
         )}
+
+        {/* Image */}
+        <div className="relative z-10 flex-shrink-0">
+          <img
+            src={imageUrl}
+            alt={item.name}
+            className="w-17 h-17 md:w-20 md:h-20 object-cover rounded-2xl shadow-lg cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => onImageClick && onImageClick(item)}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/logo_mazzat.png";
+            }}
+          />
+        </div>
 
         {/* Name + Ingredients */}
         <div className="flex-1 min-w-0 relative z-10 text-black">
@@ -48,7 +63,7 @@ export default function ItemRow({ item }: Props) {
           {item.ingredients && (
             <p
               className={`
-                mt-1 text-xs md:text-md text-black/60
+                mt-1 text-[11px] md:text-md text-black/60
                 ${unavailable ? "line-through decoration-black/30 decoration-1" : ""}
               `}
             >
@@ -60,7 +75,7 @@ export default function ItemRow({ item }: Props) {
         {/* Price */}
         <div
           className={`
-            flex items-center relative z-10 text-md md:text-lg text-black/80
+            flex items-center relative z-10 text-md md:text-lg text-black/80 flex-shrink-0
             ${unavailable ? "line-through decoration-black/50 decoration-2" : ""}
           `}
         >

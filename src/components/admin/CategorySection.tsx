@@ -122,23 +122,20 @@ const CategorySection: React.FC<Props> = ({
   };
 
   return (
-    <div
-      className="bg-white p-4 rounded-3xl mb-6 border-4"
-      style={{ borderColor: "#D2000E" }}
-    >
-      <h2 className="font-bold text-2xl mb-2">الأقسام</h2>
+    <div className="admin-card admin-animate-in p-5 md:p-6">
+      <h2 className="admin-section-header">الأقسام</h2>
 
       {/* ===== خانة إدخال قسم جديد + زر الإضافة ===== */}
-      <div className="flex gap-2 flex-wrap mb-4">
+      <div className="flex gap-3 flex-wrap mb-5">
         <input
-          className="flex-1 p-2 border rounded-xl min-w-[160px]"
+          className="admin-input flex-1 min-w-[160px]"
           placeholder="اسم القسم"
           value={newCategoryName}
           onChange={(e) => setNewCategoryName(e.target.value)}
         />
         <button
           onClick={() => setPopup({ type: "addCategory" })}
-          className="px-4 rounded-xl bg-[#FDB143] flex items-center text-white hover:bg-[#FDB143]/80"
+          className="admin-btn admin-btn-accent px-5"
         >
           <FiPlus className="text-xl" />
         </button>
@@ -146,12 +143,13 @@ const CategorySection: React.FC<Props> = ({
 
       {/* ===== عنوان الستارة للأقسام ===== */}
       <div
-        className="bg-gray-100 text-black p-4 rounded-2xl
-                flex justify-between items-center cursor-pointer mb-3 "
+        className="admin-accordion p-4 flex justify-between items-center cursor-pointer mb-3"
         onClick={() => setOpen((prev) => !prev)}
       >
-        <h2 className="font-bold text-xl">عرض الأقسام</h2>
-        {open ? <FiChevronUp /> : <FiChevronDown />}
+        <h3 className="font-bold text-lg text-[#231F20]">عرض الأقسام</h3>
+        <span className="text-[#D2000E] transition-transform duration-200">
+          {open ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
+        </span>
       </div>
 
       {/* ===== محتوى الستارة للأقسام ===== */}
@@ -168,15 +166,15 @@ const CategorySection: React.FC<Props> = ({
               {sortedCategories.map(([id, cat]) => (
                 <SortableItem key={id} id={id}>
                   {({ setActivatorNodeRef, listeners, attributes }) => (
-                    <div className="bg-gray-100 px-3 py-2 rounded-xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="admin-row bg-gray-50 px-4 py-3 rounded-xl flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border border-black/5">
 
                       {/* الاسم + مقبض السحب */}
-                      <div className="flex items-center gap-2 flex-1">
+                      <div className="flex items-center gap-3 flex-1">
                         <button
                           ref={setActivatorNodeRef}
                           {...listeners}
                           {...attributes}
-                          className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-700 touch-none"
+                          className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-[#D2000E] touch-none transition-colors duration-200"
                         >
                           <FiMenu />
                         </button>
@@ -184,38 +182,38 @@ const CategorySection: React.FC<Props> = ({
                         {editingId === id ? (
                           <>
                             <input
-                              className="flex-1 p-1 border rounded-xl"
+                              className="admin-input flex-1 py-1.5"
                               value={tempName}
                               onChange={(e) => setTempName(e.target.value)}
                             />
                             <button
                               onClick={() => saveEdit(id)}
-                              className="text-green-600 hover:text-green-800"
+                              className="admin-btn admin-btn-success px-3 py-1.5"
                             >
                               <FiCheck />
                             </button>
                           </>
                         ) : (
-                          <span className="flex-1 font-medium">{cat.name}</span>
+                          <span className="flex-1 font-semibold text-[#231F20]">{cat.name}</span>
                         )}
                       </div>
 
                       {/* الجهة اليمنى */}
                       <div className="flex items-center justify-between sm:justify-end gap-4">
                         {/* تعديل + حذف */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           <button
                             onClick={() => startEditing(id, cat.name)}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="admin-btn admin-btn-secondary px-2.5 py-1.5 text-blue-600"
                           >
-                            <FiEdit />
+                            <FiEdit size={16} />
                           </button>
 
                           <button
                             onClick={() => setPopup({ type: "deleteCategory", id })}
-                            className="text-red-600 hover:text-red-800"
+                            className="admin-btn admin-btn-danger px-2.5 py-1.5"
                           >
-                            <FiTrash2 />
+                            <FiTrash2 size={16} />
                           </button>
                         </div>
 
@@ -223,19 +221,19 @@ const CategorySection: React.FC<Props> = ({
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => toggleAvailability(id, cat.available)}
-                            className={`relative w-10 h-5 rounded-full transition-all ${cat.available
+                            className={`relative w-11 h-6 rounded-full transition-all duration-200 ${cat.available
                               ? "bg-green-500"
-                              : "bg-gray-400"
+                              : "bg-gray-300"
                               }`}
                           >
                             <span
-                              className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${cat.available
+                              className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-200 ${cat.available
                                 ? "translate-x-5"
                                 : "translate-x-0.5"
                                 }`}
                             />
                           </button>
-                          <span className="text-[11px] font-bold">
+                          <span className="text-xs font-semibold text-gray-600">
                             {cat.available ? "متوفر" : "غير متوفر"}
                           </span>
                         </div>

@@ -178,3 +178,223 @@ body {
 .animate-fadeIn {
   animation: fadeIn 1.5s ease forwards;
 }
+
+/* ===== Admin Dashboard Utilities ===== */
+
+@keyframes adminFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes adminModalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes adminOverlayFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-animate-in {
+  animation: adminFadeIn 0.4s ease forwards;
+}
+
+.admin-modal-overlay {
+  animation: adminOverlayFade 0.2s ease forwards;
+}
+
+.admin-modal-content {
+  animation: adminModalIn 0.25s ease forwards;
+}
+
+.admin-card {
+  background: white;
+  border: 1px solid rgba(210, 0, 14, 0.15);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(210, 0, 14, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(210, 0, 14, 0.06);
+  border-color: rgba(210, 0, 14, 0.25);
+}
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 200ms ease;
+  cursor: pointer;
+}
+
+.admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-btn-primary {
+  background-color: #D2000E;
+  color: white;
+}
+
+.admin-btn-primary:hover:not(:disabled) {
+  background-color: #b8000c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(210, 0, 14, 0.25);
+}
+
+.admin-btn-secondary {
+  background-color: white;
+  color: #231F20;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.admin-btn-secondary:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: rgba(210, 0, 14, 0.2);
+  transform: translateY(-1px);
+}
+
+.admin-btn-danger {
+  background-color: #dc2626;
+  color: white;
+}
+
+.admin-btn-danger:hover:not(:disabled) {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.admin-btn-accent {
+  background-color: #FCD451;
+  color: #D2000E;
+}
+
+.admin-btn-accent:hover:not(:disabled) {
+  background-color: #f5c840;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(252, 212, 81, 0.4);
+}
+
+.admin-btn-success {
+  background-color: #16a34a;
+  color: white;
+}
+
+.admin-btn-success:hover:not(:disabled) {
+  background-color: #15803d;
+  transform: translateY(-1px);
+}
+
+.admin-btn-card {
+  height: 2.5rem;
+  min-height: 2.5rem;
+  line-height: 1.25rem;
+  padding: 0 0.75rem;
+  font-size: 0.75rem;
+  border-radius: 0.75rem;
+  flex-shrink: 0;
+  transition: all 200ms ease;
+}
+
+.admin-btn-card:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.admin-btn-card-text {
+  min-width: 5.5rem;
+  width: 5.5rem;
+}
+
+.admin-btn-card-icon {
+  width: 2.5rem;
+  min-width: 2.5rem;
+  padding: 0;
+}
+
+.admin-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.375rem;
+}
+
+.admin-input,
+.admin-select,
+.admin-textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0.75rem;
+  background: #fafafa;
+  font-size: 0.875rem;
+  transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+  outline: none;
+  border-color: rgba(210, 0, 14, 0.4);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(210, 0, 14, 0.08);
+}
+
+.admin-input::placeholder {
+  color: #9ca3af;
+}
+
+.admin-row {
+  transition: background-color 200ms ease;
+}
+
+.admin-row:hover {
+  background-color: rgba(252, 212, 81, 0.08);
+}
+
+.admin-section-header {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #231F20;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(210, 0, 14, 0.1);
+}
+
+.admin-accordion {
+  background: #f8f9fa;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.875rem;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+
+.admin-accordion:hover {
+  background: #f3f4f6;
+  border-color: rgba(210, 0, 14, 0.12);
+}
