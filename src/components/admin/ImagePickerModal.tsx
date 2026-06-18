@@ -19,6 +19,16 @@ const AVAILABLE_IMAGES = [
   "تشيكن سكالوبيني.jpeg",
   "طعجة شنيتسل.jpeg",
   "فطيرة ذهبية.jpeg",
+  "تشيكن بانيه.jpeg",
+  "تشيكن كاري.jpeg",
+  "تشيكن بيتزا.jpeg",
+  "تشيكن سويس.jpeg",
+  "سترامبولي.jpeg",
+  "صفيحة مسحب دجاج.jpeg",
+  "فطيرة دجاج.jpeg",
+  "تشيكن نابوليتان.jpeg",
+  "طعجة بيستو دجاج.jpeg",
+
 ];
 
 export default function ImagePickerModal({ isOpen, onClose, onSelectImage, currentImage }: Props) {
