@@ -1,22 +1,26 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import AdminPage from "./pages/Admin";   // صحيح
-import MenuPage from "./pages/MenuPage";   // صحيح
+import MenuPage from "./pages/MenuPage";
+
+const AdminPage = lazy(() => import("./pages/Admin"));
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MenuPage />} />
-      <Route path="/admin" element={<AdminPage />} />
+    <Suspense fallback={<div className="min-h-screen bg-[#FCD451]" />}>
+      <Routes>
+        <Route path="/" element={<MenuPage />} />
+        <Route path="/admin" element={<AdminPage />} />
 
-      {/* fallback */}
-      <Route
-        path="*"
-        element={
-          <div className="text-white p-10 text-center">
-            الصفحة غير موجودة
-          </div>
-        }
-      />
-    </Routes>
+        {/* fallback */}
+        <Route
+          path="*"
+          element={
+            <div className="text-white p-10 text-center font-[Cairo]">
+              الصفحة غير موجودة
+            </div>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 }

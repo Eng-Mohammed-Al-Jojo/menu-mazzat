@@ -20,23 +20,23 @@ export default function ItemDetailModal({ item, isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      {/* Background Backdrop Overlay */}
+      {/* Background Backdrop Overlay with gentle blur and fade */}
       <div
-        className="fixed inset-0 bg-black/65 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs animate-modalOverlay"
         onClick={onClose}
       />
 
-      {/* Main Modal Sheet */}
-      <div className="relative w-full sm:max-w-md max-h-[90vh] bg-[#FFFDF7] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 border border-yellow-500/20 font-[Almarai]">
+      {/* Main Modal Sheet with smooth slide up */}
+      <div className="relative w-full sm:max-w-md max-h-[90vh] bg-[#FFFDF7] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 border border-yellow-500/20 font-[Cairo] animate-modalSheet">
 
         {/* Floating Control Buttons */}
         <div className="absolute top-3 left-3 right-3 z-20 flex justify-between items-center pointer-events-none">
           <button
             onClick={onClose}
-            className="pointer-events-auto w-10 h-10 bg-white/90 text-[#D2000E] hover:bg-white rounded-full flex items-center justify-center transition-all shadow-md active:scale-95 cursor-pointer"
+            className="pointer-events-auto w-9 h-9 sm:w-10 sm:h-10 bg-white/90 text-[#D2000E] hover:bg-white rounded-full flex items-center justify-center transition-all shadow-md active:scale-95 cursor-pointer"
             aria-label="إغلاق"
           >
-            <FiX size={22} />
+            <FiX size={20} />
           </button>
 
           {hasCustomImage && (

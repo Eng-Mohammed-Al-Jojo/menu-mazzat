@@ -1,45 +1,19 @@
 @import "tailwindcss";
 
-
-
 @font-face {
   font-family: 'Playpen Sans Arabic';
   src: url('/fonts/PlaypenSansArabic.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
-
 
 @font-face {
   font-family: 'Lemonada';
   src: url('/fonts/Lemonada.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
-}
-
-@font-face {
-  font-family: 'BalooBhaijaan2-Bold';
-  src: url('/fonts/BalooBhaijaan2-Bold.ttf') format('truetype');
-  font-weight: 70;
-  font-style: extra-bold;
-}
-
-
-
-/* Cairo Thin */
-@font-face {
-  font-family: 'Cairo';
-  src: url('/fonts/Cairo-Thin.ttf') format('truetype');
-  font-weight: 200;
-  font-style: normal;
-}
-
-/* Cairo ExtraLight */
-@font-face {
-  font-family: 'Cairo';
-  src: url('/fonts/Cairo-ExtraLight.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
+  font-display: swap;
 }
 
 /* Cairo Light */
@@ -48,6 +22,16 @@
   src: url('/fonts/Cairo-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
+}
+
+/* Cairo Light */
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/Cairo-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* Cairo Regular */
@@ -56,6 +40,7 @@
   src: url('/fonts/Cairo-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Cairo Medium */
@@ -64,6 +49,7 @@
   src: url('/fonts/Cairo-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Cairo SemiBold */
@@ -72,6 +58,7 @@
   src: url('/fonts/Cairo-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Cairo Bold */
@@ -80,6 +67,7 @@
   src: url('/fonts/Cairo-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Cairo ExtraBold */
@@ -88,43 +76,64 @@
   src: url('/fonts/Cairo-ExtraBold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
+  font-display: swap;
 }
 
-/* Amiri Light */
+/* Almarai Light */
 @font-face {
   font-family: 'Almarai';
   src: url('/fonts/Almarai-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
 }
 
-/* Amiri Regular */
+/* Almarai Regular */
 @font-face {
   font-family: 'Almarai';
   src: url('/fonts/Almarai-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
-/* Amiri Bold */
+/* Almarai Bold */
 @font-face {
   font-family: 'Almarai';
   src: url('/fonts/Almarai-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
 
-/* Amiri Extra Bold */
+/* Almarai Extra Bold */
 @font-face {
   font-family: 'Almarai';
   src: url('/fonts/Almarai-ExtraBold.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
+  font-display: swap;
 }
-
 
 body {
   font-family: 'Playpen Sans Arabic', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #fef3c7 25%, #fde68a 50%, #fef3c7 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite ease-in-out;
 }
 
 
@@ -177,6 +186,35 @@ body {
 
 .animate-fadeIn {
   animation: fadeIn 1.5s ease forwards;
+}
+
+/* Modal Smooth Mobile Animations */
+@keyframes modalOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSheetSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-modalOverlay {
+  animation: modalOverlayFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-modalSheet {
+  animation: modalSheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ===== Admin Dashboard Utilities ===== */

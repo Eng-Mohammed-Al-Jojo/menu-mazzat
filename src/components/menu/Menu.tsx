@@ -42,88 +42,99 @@ const loadFromLocal = () => {
 /* ======================================== */
 
 export default function Menu() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Stale-While-Revalidate: اقرأ الكاش فوراً للظهور اللحظي بدون شاشة بيضاء
+  const cachedData = useMemo(() => loadFromLocal(), []);
+
+  const [categories, setCategories] = useState<Category[]>(() => cachedData?.categories || []);
+  const [items, setItems] = useState<Item[]>(() => cachedData?.items || []);
+  const [loading, setLoading] = useState<boolean>(() => !cachedData);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; color: "green" | "red" } | null>(null);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-  /* ================= Firebase Load ================= */
+  /* ================= Firebase Load (Background Revalidation) ================= */
   useEffect(() => {
     let timeoutId: number | null = null;
     let firebaseLoaded = false;
 
-    const loadOnline = () => {
-      let cats: Category[] = [];
-      let its: Item[] = [];
-      let catsLoaded = false;
-      let itemsLoaded = false;
+    let cats: Category[] = [];
+    let its: Item[] = [];
+    let catsLoaded = false;
+    let itemsLoaded = false;
 
-      timeoutId = window.setTimeout(() => {
-        if (!firebaseLoaded) {
-          const cached = loadFromLocal();
-          if (cached) {
-            setCategories(cached.categories || []);
-            setItems(cached.items || []);
-            setLoading(false);
-            setToast({ message: "الإنترنت ضعيف، تم تحميل آخر نسخة محفوظة", color: "red" });
-            setTimeout(() => setToast(null), 4000);
-          }
-        }
-      }, 8000);
-
-      const finishFirebase = () => {
-        firebaseLoaded = true;
-        saveToLocal(cats, its);
+    // مهلة للطوارئ فقط إذا لم يتوفر أي كاش سابق
+    timeoutId = window.setTimeout(() => {
+      if (!firebaseLoaded && !cachedData) {
         setLoading(false);
-        if (timeoutId) clearTimeout(timeoutId);
-        setToast({ message: "تم التحميل من قاعدة البيانات", color: "green" });
-        setTimeout(() => setToast(null), 3000);
-      };
+        setToast({ message: "الإنترنت ضعيف، يرجى إعادة المحاولة", color: "red" });
+        setTimeout(() => setToast(null), 4000);
+      }
+    }, 6000);
 
-      onValue(ref(db, "categories"), (snap) => {
-        const data = snap.val();
-        cats = data
-          ? Object.entries(data).map(([id, v]: any) => ({
+    const finishFirebase = () => {
+      firebaseLoaded = true;
+      if (timeoutId) clearTimeout(timeoutId);
+      saveToLocal(cats, its);
+      setLoading(false);
+    };
+
+    const unsubCats = onValue(ref(db, "categories"), (snap) => {
+      const data = snap.val();
+      cats = data
+        ? Object.entries(data).map(([id, v]: any) => ({
             id,
             name: v.name,
             available: v.available === true,
-            order: Number(v.order ?? 9999), // ✅ حل مشكلة الترتيب
+            order: Number(v.order ?? 9999),
             createdAt: v.createdAt || 0,
           }))
-          : [];
-        setCategories([...cats]); // ✅ reference جديد عشان React re-render
-        catsLoaded = true;
-        if (itemsLoaded) finishFirebase();
-      });
+        : [];
+      setCategories(cats);
+      catsLoaded = true;
+      if (itemsLoaded) finishFirebase();
+    });
 
-      onValue(ref(db, "items"), (snap) => {
-        const data = snap.val();
-        its = data
-          ? Object.entries(data).map(([id, v]: any) => ({
+    const unsubItems = onValue(ref(db, "items"), (snap) => {
+      const data = snap.val();
+      its = data
+        ? Object.entries(data).map(([id, v]: any) => ({
             id,
             ...v,
             visible: v.visible !== false,
             createdAt: v.createdAt || 0,
           }))
-          : [];
-        setItems([...its]); // ✅ reference جديد
-        itemsLoaded = true;
-        if (catsLoaded) finishFirebase();
-      });
-    };
+        : [];
+      setItems(its);
+      itemsLoaded = true;
+      if (catsLoaded) finishFirebase();
+    });
 
-    if (navigator.onLine) loadOnline();
-  }, []);
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      unsubCats();
+      unsubItems();
+    };
+  }, [cachedData]);
 
   /* ================= ORDERED Categories (useMemo safe) ================= */
   const availableCategories = useMemo(() => {
-    return [...categories]
+    return categories
       .filter((cat) => cat.available)
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }, [categories]);
+
+  /* ================= Group Items by Category (Prevents repeated filtering on render) ================= */
+  const itemsByCategory = useMemo(() => {
+    const map = new Map<string, Item[]>();
+    for (const item of items) {
+      if (!map.has(item.categoryId)) {
+        map.set(item.categoryId, []);
+      }
+      map.get(item.categoryId)!.push(item);
+    }
+    return map;
+  }, [items]);
 
   const handleImageClick = (item: Item) => {
     setSelectedItem(item);
@@ -211,7 +222,7 @@ export default function Menu() {
         <CategorySection
           key={cat.id}
           category={cat}
-          items={items.filter((i) => i.categoryId === cat.id)}
+          items={itemsByCategory.get(cat.id) || []}
           onImageClick={handleImageClick}
         />
       ))}
