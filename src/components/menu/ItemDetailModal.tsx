@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { type Item } from "./Menu";
-import { FiX } from "react-icons/fi";
+import { FiX, FiMaximize2, FiCheckCircle } from "react-icons/fi";
 
 interface Props {
   item: Item;
@@ -8,84 +9,135 @@ interface Props {
 }
 
 export default function ItemDetailModal({ item, isOpen, onClose }: Props) {
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
   if (!isOpen) return null;
 
+  const hasCustomImage = Boolean(item.image) && !imgError;
   const imageUrl = item.image ? `/images/${item.image}` : "/logo_mazzat.png";
   const prices = String(item.price).split(",");
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      {/* Background Backdrop Overlay */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-md admin-modal-overlay"
+        className="fixed inset-0 bg-black/65 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative w-full h-full flex items-center justify-center p-4 md:p-6">
-        <div className="admin-modal-content relative w-full max-w-lg max-h-[90vh] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col border border-black/5">
+      {/* Main Modal Sheet */}
+      <div className="relative w-full sm:max-w-md max-h-[90vh] bg-[#FFFDF7] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10 border border-yellow-500/20 font-[Almarai]">
 
+        {/* Floating Control Buttons */}
+        <div className="absolute top-3 left-3 right-3 z-20 flex justify-between items-center pointer-events-none">
           <button
             onClick={onClose}
-            className="absolute top-4 left-4 z-20 w-10 h-10 bg-white/95 text-[#D2000E] rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-all duration-200"
+            className="pointer-events-auto w-10 h-10 bg-white/90 text-[#D2000E] hover:bg-white rounded-full flex items-center justify-center transition-all shadow-md active:scale-95 cursor-pointer"
+            aria-label="إغلاق"
           >
-            <FiX size={18} />
+            <FiX size={22} />
           </button>
 
-          <div className="relative w-full h-72 md:h-80 flex-shrink-0 p-3 pb-0">
-            <img
-              src={imageUrl}
-              alt={item.name}
-              className="w-full h-full object-cover rounded-xl"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/logo_mazzat.png";
-              }}
-            />
+          {hasCustomImage && (
+            <button
+              onClick={() => setIsZoomed(true)}
+              className="pointer-events-auto w-10 h-10 bg-white/90 text-[#D2000E] hover:bg-white rounded-full flex items-center justify-center transition-all shadow-md active:scale-95 cursor-pointer"
+              title="تكبير الصورة"
+            >
+              <FiMaximize2 size={18} />
+            </button>
+          )}
+        </div>
 
-            <div className="absolute inset-3 bottom-0 rounded-xl bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+        {/* Prominent Large Food Hero Image */}
+        <div className="relative w-full h-64 sm:h-72 bg-amber-50/80 overflow-hidden flex-shrink-0">
+          <img
+            src={imageUrl}
+            alt={item.name}
+            className={`w-full h-full transition-transform duration-700 ${
+              hasCustomImage ? "object-cover hover:scale-105" : "object-contain p-8 opacity-80"
+            }`}
+            onError={() => setImgError(true)}
+          />
+          {hasCustomImage && (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+          )}
+        </div>
 
-            <h2 className="absolute bottom-7 right-7 text-white text-2xl font-bold drop-shadow-md">
-              {item.name}
-            </h2>
-          </div>
+        {/* Content Body */}
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 text-right">
 
-          <div className="flex-1 overflow-y-auto p-6 md:p-7 space-y-5">
-
-            {item.ingredients && (
-              <div className="bg-gray-50 rounded-xl p-5 border border-black/5">
-                <h3 className="font-bold text-[#D2000E] mb-2.5 text-base">
-                  المكونات
-                </h3>
-                <p className="text-gray-600 leading-relaxed text-[0.9375rem]">
-                  {item.ingredients}
-                </p>
-              </div>
-            )}
-
-            <div className="bg-gradient-to-r from-[#FDE68A] to-[#F59E0B] rounded-xl p-5 text-center shadow-sm">
-              <h3 className="font-bold text-black/80 mb-3 text-sm uppercase tracking-wide">السعر</h3>
-
-              <div className="flex justify-center gap-2 flex-wrap font-bold text-[#7a0c12] text-xl">
-                {prices.map((p, i) => (
-                  <span key={i} className="flex items-center">
-                    {p.trim()}₪
-                    {i !== prices.length - 1 && (
-                      <span className="mx-2 text-black/30">|</span>
-                    )}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {item.visible === false && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
-                <p className="text-red-600 font-bold">
+          {/* Title & Availability */}
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#D2000E] leading-snug">
+                {item.name}
+              </h2>
+              {item.visible !== false ? (
+                <span className="inline-flex items-center gap-1.5 mt-2 text-xs font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-1 rounded-full border border-emerald-300/60">
+                  <FiCheckCircle size={13} /> متوفر للطلب
+                </span>
+              ) : (
+                <span className="inline-block mt-2 text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-full border border-red-200">
                   غير متوفر حالياً
-                </p>
-              </div>
-            )}
-
+                </span>
+              )}
+            </div>
           </div>
+
+          {/* Ingredients Box */}
+          {item.ingredients && (
+            <div className="bg-[#FEFCE8] rounded-2xl p-4 border border-yellow-200/80 text-right shadow-xs">
+              <h3 className="font-bold text-[#D2000E] text-xs mb-1.5 tracking-wide">
+                المكونات والتحضير:
+              </h3>
+              <p className="text-stone-700 text-sm leading-relaxed font-[Cairo]">
+                {item.ingredients}
+              </p>
+            </div>
+          )}
+
+          {/* Golden Signature Price Tag Banner */}
+          <div className="bg-gradient-to-r from-[#FDE68A] via-[#FCD451] to-[#FDE68A] border border-yellow-400/80 rounded-2xl p-3.5 flex items-center justify-between shadow-sm">
+            <span className="text-[#7a0c12] font-extrabold text-sm uppercase tracking-wider">
+              السعر
+            </span>
+            <div className="flex items-center gap-2 font-extrabold text-xl sm:text-2xl text-[#7a0c12]">
+              {prices.map((p, i) => (
+                <span key={i} className="flex items-center">
+                  {p.trim()} <span className="text-base mr-0.5">₪</span>
+                  {i !== prices.length - 1 && (
+                    <span className="mx-2 text-[#7a0c12]/40">|</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
+
+      {/* Fullscreen Lightbox Image Modal */}
+      {isZoomed && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/92 backdrop-blur-md flex items-center justify-center p-4"
+          onClick={() => setIsZoomed(false)}
+        >
+          <button
+            onClick={() => setIsZoomed(false)}
+            className="absolute top-5 left-5 text-white bg-white/20 p-3 rounded-full hover:bg-white/40 transition-colors cursor-pointer"
+            aria-label="إغلاق التكبير"
+          >
+            <FiX size={24} />
+          </button>
+          <img
+            src={imageUrl}
+            alt={item.name}
+            className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+          />
+        </div>
+      )}
     </div>
   );
 }
