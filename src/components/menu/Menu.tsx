@@ -1,9 +1,10 @@
-/* ================= ORDERED Menu Component ================= */
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { db } from "../../firebase";
 import { ref, onValue } from "firebase/database";
 import CategorySection from "./CategorySection";
 import ItemDetailModal from "./ItemDetailModal";
+
+import SplashScreen from "./SplashScreen";
 
 /* ================= Types ================= */
 export interface Category {
@@ -42,41 +43,61 @@ const loadFromLocal = () => {
 /* ======================================== */
 
 export default function Menu() {
-  // Stale-While-Revalidate: اقرأ الكاش فوراً للظهور اللحظي بدون شاشة بيضاء
+  // Stale-While-Revalidate: قراءة الكاش للرندر الفوري خلف شاشة البداية
   const cachedData = useMemo(() => loadFromLocal(), []);
 
   const [categories, setCategories] = useState<Category[]>(() => cachedData?.categories || []);
   const [items, setItems] = useState<Item[]>(() => cachedData?.items || []);
-  const [loading, setLoading] = useState<boolean>(() => !cachedData);
+  
+  // 1. وقت أدنى لشاشة البداية لترسيخ الهوية البصرية (1 ثانية)
+  const [minTimePassed, setMinTimePassed] = useState(false);
+  // 2. حالة جاهزية مزامنة Firebase
+  const [firebaseReady, setFirebaseReady] = useState(false);
+
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; color: "green" | "red" } | null>(null);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-  /* ================= Firebase Load (Background Revalidation) ================= */
+  /* ================= 1. Minimum Display Timer ================= */
   useEffect(() => {
-    let timeoutId: number | null = null;
-    let firebaseLoaded = false;
+    const timer = setTimeout(() => {
+      setMinTimePassed(true);
+    }, 1000); // 1000ms لظهور الشعار واستقبال الزبون
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* ================= 2. Firebase Load & Background Sync ================= */
+  useEffect(() => {
+    let emergencyTimeoutId: number | null = null;
+    let cacheFallbackTimeoutId: number | null = null;
 
     let cats: Category[] = [];
     let its: Item[] = [];
     let catsLoaded = false;
     let itemsLoaded = false;
 
-    // مهلة للطوارئ فقط إذا لم يتوفر أي كاش سابق
-    timeoutId = window.setTimeout(() => {
-      if (!firebaseLoaded && !cachedData) {
-        setLoading(false);
+    // إذا توفر كاش سابق، لا نحبس الزبون أكثر من 1.4 ثانية إذا تعثرت شبكة الهاتف
+    if (cachedData) {
+      cacheFallbackTimeoutId = window.setTimeout(() => {
+        setFirebaseReady(true);
+      }, 1400);
+    }
+
+    // مهلة طوارئ عامة (6 ثوانٍ) في حال انقطاع الشبكة تماماً
+    emergencyTimeoutId = window.setTimeout(() => {
+      setFirebaseReady(true);
+      if (!cachedData) {
         setToast({ message: "الإنترنت ضعيف، يرجى إعادة المحاولة", color: "red" });
         setTimeout(() => setToast(null), 4000);
       }
     }, 6000);
 
     const finishFirebase = () => {
-      firebaseLoaded = true;
-      if (timeoutId) clearTimeout(timeoutId);
+      if (emergencyTimeoutId) clearTimeout(emergencyTimeoutId);
+      if (cacheFallbackTimeoutId) clearTimeout(cacheFallbackTimeoutId);
       saveToLocal(cats, its);
-      setLoading(false);
+      setFirebaseReady(true);
     };
 
     const unsubCats = onValue(ref(db, "categories"), (snap) => {
@@ -111,7 +132,8 @@ export default function Menu() {
     });
 
     return () => {
-      if (timeoutId) clearTimeout(timeoutId);
+      if (emergencyTimeoutId) clearTimeout(emergencyTimeoutId);
+      if (cacheFallbackTimeoutId) clearTimeout(cacheFallbackTimeoutId);
       unsubCats();
       unsubItems();
     };
@@ -124,10 +146,13 @@ export default function Menu() {
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }, [categories]);
 
-  /* ================= Group Items by Category (Prevents repeated filtering on render) ================= */
+  /* ================= Group Items by Category (Only available/visible items) ================= */
   const itemsByCategory = useMemo(() => {
     const map = new Map<string, Item[]>();
     for (const item of items) {
+      // إذا كان الصنف غير متوفر من لوحة التحكم، لا يظهر للزبون نهائياً
+      if (item.visible === false) continue;
+
       if (!map.has(item.categoryId)) {
         map.set(item.categoryId, []);
       }
@@ -136,44 +161,32 @@ export default function Menu() {
     return map;
   }, [items]);
 
-  const handleImageClick = (item: Item) => {
+  const handleImageClick = useCallback((item: Item) => {
     setSelectedItem(item);
     setDetailModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseDetailModal = () => {
+  const handleCloseDetailModal = useCallback(() => {
     setDetailModalOpen(false);
     setSelectedItem(null);
-  };
+  }, []);
 
-  /* ================= Loading Screen ================= */
-  if (loading) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-linear-to-br from-[#FDE68A] to-[#FCD451] font-[Almarai] font-bold">
-        <div className="relative w-56 h-56 mb-6">
-          <img
-            src="/logo_mazzat.png"
-            alt="Logo"
-            className="w-full h-full object-contain rounded-full shadow-2xl animate-pulseScale"
-          />
-          <div className="absolute inset-0 rounded-full border-4 border-yellow-300 opacity-50 animate-ping"></div>
-        </div>
+  // Memoize visible category list to prevent unnecessary re-filtering
+  const displayedCategories = useMemo(() => {
+    if (!activeCategory) return availableCategories;
+    return availableCategories.filter((c) => c.id === activeCategory);
+  }, [activeCategory, availableCategories]);
 
-        <h2 className="text-3xl md:text-5xl font-extrabold bg-linear-to-r from-yellow-900 to-yellow-700 bg-clip-text text-transparent animate-textGradient">
-          يتم تحضير القائمة
-          <span className="text-[#D2000E] animate-ping ml-1">...</span>
-        </h2>
-
-        <p className="mt-4 text-black/70 text-lg md:text-xl font-[Alamiri] tracking-wide animate-fadeIn">
-          انتظر قليلاً، سيتم عرض كل الأصناف قريباً
-        </p>
-      </div>
-    );
-  }
+  // حالة التحميل الإجمالية
+  const isLoading = !minTimePassed || !firebaseReady;
 
   /* ================= Tabs / Filter Buttons ================= */
   return (
-    <main className="max-w-4xl mx-auto px-4 pb-20 space-y-8 font-[Alamiri] text-black">
+    <>
+      {/* Branded Splash Screen with Smooth Fade Transition */}
+      <SplashScreen isLoading={isLoading} />
+
+      <main className="max-w-4xl mx-auto px-4 pb-20 space-y-8 font-[Cairo] text-black">
       {toast && (
         <div
           className="fixed top-6 right-6 px-6 py-3 rounded-2xl font-bold shadow-2xl z-50 text-white"
@@ -189,36 +202,43 @@ export default function Menu() {
       )}
 
       {/* =============== Filter Buttons =============== */}
-      <div className="flex flex-wrap gap-3 justify-center top-2 z-30">
+      <nav
+        aria-label="أقسام المنيو"
+        className="flex flex-wrap gap-2.5 sm:gap-3 justify-center items-center py-1 z-20"
+      >
         <button
+          type="button"
           onClick={() => setActiveCategory(null)}
-          className={`px-4 py-2 rounded-full font-bold transition-all duration-200 font-[Cairo] ${activeCategory === null
-            ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
-            : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
-            }`}
+          className={`px-4 py-2 rounded-full font-bold text-sm font-[Cairo] select-none touch-manipulation transform-gpu transition-all duration-150 active:scale-95 ${
+            activeCategory === null
+              ? "bg-[#D2000E] text-white shadow-md shadow-red-900/20 scale-105"
+              : "bg-white/95 text-stone-800 hover:bg-white shadow-xs hover:shadow-sm"
+          }`}
         >
           جميع الأصناف
         </button>
 
-        {availableCategories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-full font-bold transition-all duration-200 font-[Cairo] ${activeCategory === cat.id
-              ? "bg-[#D2000E] text-white shadow-lg scale-105 text-sm md:text-md"
-              : "bg-white/80 backdrop-blur text-black hover:bg-white shadow text-xs md:text-md"
+        {availableCategories.map((cat) => {
+          const isActive = activeCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-4 py-2 rounded-full font-bold text-sm font-[Cairo] select-none touch-manipulation transform-gpu transition-all duration-150 active:scale-95 ${
+                isActive
+                  ? "bg-[#D2000E] text-white shadow-md shadow-red-900/20 scale-105"
+                  : "bg-white/95 text-stone-800 hover:bg-white shadow-xs hover:shadow-sm"
               }`}
-          >
-            {cat.name}
-          </button>
-        ))}
-      </div>
+            >
+              {cat.name}
+            </button>
+          );
+        })}
+      </nav>
 
       {/* =============== Display Sections =============== */}
-      {(activeCategory
-        ? availableCategories.filter((c) => c.id === activeCategory)
-        : availableCategories
-      ).map((cat) => (
+      {displayedCategories.map((cat) => (
         <CategorySection
           key={cat.id}
           category={cat}
@@ -236,5 +256,6 @@ export default function Menu() {
         />
       )}
     </main>
+    </>
   );
 }
